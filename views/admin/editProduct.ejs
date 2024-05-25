@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="/asset/admin/editProduct.css">
+    <style>
+        .preview-item {
+            margin-bottom: 10px;
+        }
+
+        .preview-image {
+            max-width: 100px; /* Set the maximum width of the preview image */
+            max-height: 100px; /* Set the maximum height of the preview image */
+            display: block;
+            margin-bottom: 5px;
+        }
+             
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Edit Product</h1>
+    <a href="/admin/productmanagement">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </a>
+      
+    <div class="form-group">
+        <form action="/admin/editProduct/<%=editProduct._id%>" method="POST" enctype="multipart/form-data">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required pattern="[A-Za-z0-9\s]+" value="<%= editProduct.name %>"><br>
+
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required pattern="[A-Za-z0-9\s]+" value="<%= editProduct.description %>"><br>
+
+            <label for="category">Category:</label>
+            <select id="category" name="categoryName" required>
+                <!-- Iterate over existing categories and populate options -->
+                <% existingCategories.forEach(category => { %>
+                    <option value="<%= category.categoryName %>" <%= editProduct.category === category.categoryName ? 'selected' : '' %>><%= category.categoryName %></option>
+                <% }) %>
+            </select><br>
+
+            <label for="stock">Stock:</label>
+            <input type="number" id="stock" name="stock" required min="0" value="<%= editProduct.stock %>"><br>
+
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" required min="0" step="0.01" value="<%= editProduct.price %>"><br>
+
+            <label for="offerprice">Offer Price:</label>
+            <input type="number" id="offerprice" name="offerprice" required min="0" step="0.01" value="<%= editProduct.offerprice %>"><br>
+
+            <div class="form-group">
+                <label for="product_image">Image</label>
+                <input type="file" class="form-control" id="product_image" placeholder="Select The Files" name="product_image" accept=".jpg, .png, .jpeg" multiple >
+            </div>
+            <div class="selected-images-preview">
+                <% editProduct.productImages.forEach((image)=>{ %>
+                  <div class="image-div">
+                   <img src="<%= image %>" alt="productimages" style="width: 7vh;height: 7vh;"> 
+                   <input type="hidden" value="<%= image %>" name="existingImage">
+                   <button type="button" onclick="deleteImage(this)">delete</button>
+                  </div>
+                  
+              <% }) %>
+              </div>
+            <!-- IMAGE  PREVIEW BEGIN -->
+            <div id="previewContainer" >
+          
+            </div>
+            <!-- IMAGE  PREVIEW END -->
+
+            <button type="submit">Update Product</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    /* Delete Image Preview Already Existing BEGIN  */
+    function deleteImage(btn){
+          btn.closest("div").remove();
+        }
+        /* Delete Image Preview Already Existing END  */
+
+    function validateForm() {
+        const name = document.getElementById('name').value.trim();
+        const stock = document.getElementById('stock').value;
+        const price = document.getElementById('price').value;
+        const description = document.getElementById('description').value.trim();
+        0
+        // Basic validation for name (only letters, numbers, and spaces allowed)
+        if (!/^[A-Za-z0-9\s]+$/.test(name)) {
+            alert('Name can only contain letters, numbers, and spaces.');
+            return false;
+        }
+
+        if (description === '' || /^\s+$/.test(description)) {
+        alert('Description cannot be empty or contain only spaces.');
+        return false;
+    }
+
+        // Basic validation for stock (must be a positive integer)
+        if (stock < 0 || !Number.isInteger(+stock)) {
+            alert('Stock must be a positive integer.');
+            return false;
+        }
+
+   
+
+        // Basic validation for price (must be a positive number with up to 2 decimal places)
+        if (price <= 0 || !/^\d+(\.\d{1,2})?$/.test(price)) {
+            alert('Price must be a positive number with up to 2 decimal places.');
+            return false;
+        }
+
+        return true;
+    }
+
+    document.getElementById("product_image").addEventListener('change', function(event) {
+    const files = event.target.files; // Get the selected files
+    
+    const previewContainer = document.getElementById('previewContainer');
+    previewContainer.innerHTML = ''; // Clear previous previews
+    
+    // Loop through each selected file
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader(); // Create a FileReader object
+        
+        reader.onload = function(e) {
+            // Create preview elements
+            const previewElement = document.createElement('div');
+            previewElement.classList.add('preview-item');
+            
+            const imageElement = document.createElement('img');
+            imageElement.classList.add('preview-image');
+            imageElement.src = e.target.result;
+            previewElement.appendChild(imageElement);
+            
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', function() {
+                previewContainer.removeChild(previewElement); // Remove preview when delete button is clicked
+                // Remove the corresponding file from the input's selection
+                const fileInput = document.getElementById('product_image');
+                const newFiles = Array.from(fileInput.files).filter(f => f !== file); // Filter out the deleted file
+                fileInput.value = ''; // Clear the input value
+                const newFileList = new DataTransfer(); // Create a new DataTransfer object
+                newFiles.forEach(f => newFileList.items.add(f)); // Add the remaining files to the new DataTransfer object
+                fileInput.files = newFileList.files; // Assign the new DataTransfer object back to the file input
+            });
+            previewElement.appendChild(deleteButton);
+            
+            // Append preview to container
+            previewContainer.appendChild(previewElement);
+        };
+
+        reader.onerror = function(e) {
+            console.error('Error occurred while reading the file.', e);
+            // Optionally, you can inform the user about the error
+        };
+        
+        // Read the selected file as a data URL
+        reader.readAsDataURL(file);
+    }
+});
+
+</script>
+
+</body>
+</html>

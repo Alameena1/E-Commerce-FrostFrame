@@ -1,0 +1,241 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+img {
+    height: 100%;
+    width: 100%;
+}
+
+/* Navbar styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background-color: #000000; /* Change as needed */
+    color: #fff; /* Change as needed */
+}
+
+.logo img {
+    height: 50px; /* Adjust as needed */
+}
+
+.nav-icons ul,
+.nav-options ul {
+    list-style: none;
+    display: flex;
+}
+
+.nav-icons li,
+.nav-options li {
+    margin-left: 20px; /* Adjust as needed */
+}
+
+.nav-icons img {
+    height: 30px; /* Adjust as needed */
+}
+
+.nav-options a {
+    text-decoration: none;
+    color: #f5f5f5; /* Change as needed */
+    margin: 30px;
+}
+
+/* Media Query for responsiveness */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-icons,
+    .nav-options {
+        margin-top: 10px;
+    }
+
+    .nav-icons ul,
+    .nav-options ul {
+        display: flex;
+    }
+
+    .nav-icons li,
+    .nav-options li {
+        margin-left: 50px; /* Adjust as needed */
+    }
+}
+
+.nav-icons ul {
+    list-style: none;
+    display: flex;
+    align-items: center; /* Center the items vertically */
+}
+
+.nav-icons li {
+    margin-right: 20px; /* Adjust spacing between icons */
+}
+
+.nav-icons li:last-child {
+    margin-right: 0; /* Remove margin from the last item */
+}
+
+.nav-icons form {
+    display: flex;
+    align-items: center;
+}
+
+.nav-icons input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.nav-icons button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* Adjust styles as needed */
+.search-bar {
+    width: 250px;
+    height: 45px;
+    background: transparent;
+    border: 2px solid #e4e4e4;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #e4e4e4;
+    padding-left: 10px;
+}
+
+.search-bar input::placeholder {
+    color: #e4e4e4;
+}
+
+.search-bar button {
+    width: 40px;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+}
+
+.hedd {
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap to the next row */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+    padding: 20px; /* Adjust padding as needed */
+}
+
+.product-card {
+    flex: 0 0 calc(33.33% - 20px); /* Adjust card width to fit three cards in a row with spacing */
+    background-color: #333;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px; /* Adjust margin between rows */
+    margin-right: 20px; /* Add spacing between each product card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box shadow */
+}
+
+.product-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(59, 42, 42, 0.5);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.overlay-content {
+    text-align: center;
+}
+
+.common-btn {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    margin: 0 10px;
+    display: inline-block;
+    background-color: transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.common-btn:hover {
+    background-color: #ff6600;
+    border-color: #ff6600;
+}
+
+form button.common-btn {
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+form button.common-btn:hover {
+    background-color: #ff6600;
+    border-color: #ff6600;
+}
+
+.product-card:hover .overlay {
+    opacity: 1;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.1);
+}
+
+.product-info {
+    flex: 1;
+    padding: 20px;
+}
+
+.product-price {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Coupon</title>
+    <link rel="stylesheet" href="/asset/admin/addproduct.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+
+    <style>
+        .preview-item {
+            margin-bottom: 10px;
+        }
+
+        .preview-image {
+            max-width: 100px;
+            max-height: 100px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* crop */
+        #cropModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+
+        input.error {
+            border-color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Add Coupon</h1>
+        <a href="javascript:history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-arrow-left">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </a>
+
+        <form id="couponForm" action="/admin/editcoupon/<%=coupons._id%>" method="POST">
+
+            <label for="couponCode">Coupon Code:</label>
+            <input type="text" id="couponCode" name="couponCode" value="<%= coupons.code%>"><br>
+            <span id="couponCodeError" class="error"></span>
+
+            <label for="discount">Discount (%):</label>
+            <input type="number" id="discount" name="discount" step="0.01" value="<%= coupons.discountValue%>"><br>
+            <span id="discountError" class="error"></span>
+
+            <label for="createDate">Create Date:</label>
+            <input type="date" id="createDate" name="createDate" value="<%= coupons.usedBy.toISOString().split('T')[0] %>""><br>
+            <span id="createDateError" class="error"></span>
+
+            <label for="expiryDate">Expiry Date:</label>
+            <input type="date" id="expiryDate" name="expiryDate" value="<%= coupons.expirationDate.toISOString().split('T')[0]%>""><br>
+            <span id="expiryDateError" class="error"></span>
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('couponForm').addEventListener('submit', function (event) {
+            let isValid = true;
+
+            const couponCodeInput = document.getElementById('couponCode');
+            const discountInput = document.getElementById('discount');
+            const createDateInput = document.getElementById('createDate');
+            const expiryDateInput = document.getElementById('expiryDate');
+
+            const couponCodeError = document.getElementById('couponCodeError');
+            const discountError = document.getElementById('discountError');
+            const createDateError = document.getElementById('createDateError');
+            const expiryDateError = document.getElementById('expiryDateError');
+
+            // Clear previous error messages
+            couponCodeError.textContent = '';
+            discountError.textContent = '';
+            createDateError.textContent = '';
+            expiryDateError.textContent = '';
+
+            // Coupon Code validation
+            if (!/^[A-Za-z0-9\s]+$/.test(couponCodeInput.value)) {
+                couponCodeError.textContent = 'Coupon Code can only contain letters, numbers, and spaces.';
+                couponCodeInput.classList.add('error');
+                isValid = false;
+            } else {
+                couponCodeInput.classList.remove('error');
+            }
+
+            // Discount validation
+            const discount = parseFloat(discountInput.value);
+            if (isNaN(discount) || discount < 0 || discount > 100) {
+                discountError.textContent = 'Discount must be a number between 0 and 100.';
+                discountInput.classList.add('error');
+                isValid = false;
+            } else {
+                discountInput.classList.remove('error');
+            }
+
+            // Create Date validation
+            const createDate = new Date(createDateInput.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (createDate < today) {
+                createDateError.textContent = 'Create date cannot be a past date.';
+                createDateInput.classList.add('error');
+                isValid = false;
+            } else {
+                createDateInput.classList.remove('error');
+            }
+
+            // Expiry Date validation
+            const expiryDate = new Date(expiryDateInput.value);
+
+            if (expiryDate <= createDate) {
+                expiryDateError.textContent = 'Expiry date must be after the create date.';
+                expiryDateInput.classList.add('error');
+                isValid = false;
+            } else {
+                expiryDateInput.classList.remove('error');
+            }
+
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+
+        // Update min attribute for expiry date based on create date
+        document.getElementById('createDate').addEventListener('change', function () {
+            const createDateInput = document.getElementById('createDate');
+            const expiryDateInput = document.getElementById('expiryDate');
+            const createDate = new Date(createDateInput.value);
+            createDate.setDate(createDate.getDate() + 1); // Expiry date must be at least one day after create date
+            const minExpiryDate = createDate.toISOString().split('T')[0];
+            expiryDateInput.setAttribute('min', minExpiryDate);
+        });
+    </script>
+
+</body>
+
+</html>

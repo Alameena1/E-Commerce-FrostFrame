@@ -1,0 +1,214 @@
+exports.postCreateRazorPayOrder=async (req,res,next)=>{
+    try{
+        /* Retry Payment BEGIN */
+        let orderId=req.query.orderId
+        if(orderId){
+            const order=await Order.findById(orderId);
+            if((order.userId.toString()!==req.session.user.toString())||!order){
+                return res.status(404).send('Error');
+            }else{
+                var options = {
+                    amount: parseInt(order.totalPrice*100),  // amount in the smallest currency unit
+                    currency: "INR",
+                    receipt: "order_rcptid_11"
+                };
+                instance.orders.create(options, function(err, order) {
+                    if(err){
+                        console.log(err)
+                    }
+                    res.json({ orderId: order.id, orderprice: options.amount })
+                });
+            }
+        }else{
+        /* Retry Payment END */
+        let totalPrice=0,coupon;
+        const {couponCode}=req.body.json_form
+        const action=req.body.action
+        if(action==="true"){
+            
+            const cart=await BuyNow.findOne({user:req.session.user})
+            .populate({
+                path: 'product',
+                populate: {
+                    path: 'category'
+                }
+            });
+            if(cart.product.stock<=0)
+            return res.status(404).json({error:Product ${cart.product.name} Out of Stock})
+
+                if(couponCode){
+                    coupon=await Coupon.findOne({$and:[{expiryDate:{$gte:Date.now()}},{couponCode:couponCode},{minAmount:{$lte:cart.totalPrice}},{maxAmount:{$gte:cart.totalPrice}}]})
+                    totalPrice+=Math.round(((cart.product.discountPrice*(1-(coupon.discount/100))) + Number.EPSILON)* 100) / 100
+                }else{
+                    totalPrice+=Math.round((cart.product.discountPrice+ Number.EPSILON)* 100) / 100
+                }
+
+        }else{
+
+            const cart=await Cart.findOne({user:req.session.user})
+            .populate({
+                path: 'items.product',
+                populate: {
+                    path: 'category'
+                }
+            });
+            if(cart.items.length==0){
+                return res.status(404).json({error:"Add Products To Cart"})
+            }
+            if(couponCode){
+                coupon=await Coupon.findOne({$and:[{expiryDate:{$gte:Date.now()}},{couponCode:couponCode},{minAmount:{$lte:cart.totalPrice}},{maxAmount:{$gte:cart.totalPrice}}]})
+                
+            }
+            for(let item of cart.items){
+
+                if(item.product.stock<item.quantity)
+                    return res.status(404).json({error:Product ${item.product.name} Out of Stock})
+
+                if(coupon){
+                    totalPrice+=Math.round(((item.product.discountPrice*(1-(coupon.discount/100)))item.quantity + Number.EPSILON) 100) / 100
+                }else{
+                    totalPrice+=Math.round((item.product.discountPrice*item.quantity + Number.EPSILON)* 100) / 100
+                }
+            }
+
+        }
+        var options = {
+            amount: parseInt(totalPrice*100),  // amount in the smallest currency unit
+            currency: "INR",
+            receipt: "order_rcptid_11"
+        };
+        instance.orders.create(options, function(err, order) {
+            if(err){
+                console.log(err)
+            }
+            res.json({ orderId: order.id, orderprice: options.amount })
+        });
+    }
+    }catch(err){
+        console.log(err)
+}
+
+}
+
+
+
+
+
+/*  */
+else if(data.paymentMethod==="razorpay"){
+
+    fetch("/user/razorpay-createOrder",{
+  method:"POST",
+  headers:{
+    "Content-Type":"application/json"
+  },
+  body:JSON.stringify({
+    json_form,
+    action
+})
+})
+.then((response)=>response.json())
+.then(data=>{
+loader.style.display="none";
+var options = {
+  "key": "rzp_test_zuuyQNQOwzCbtw", // Enter the Key ID generated from the Dashboard
+  "amount": data.orderprice, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+  "currency": "INR",
+  "name": "Alchemy",
+  "description": "Online Payment",
+  "order_id": data.orderId, //This is a sample Order ID. Pass the id obtained in the response of Step 1
+  "handler": function (response){
+
+      fetch("/user/razorpay-success",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          json_form,
+          action
+      })
+      })
+      .then((response)=>{
+    return response.json();
+  
+})
+.then((data)=>{
+  if(data.error){
+    return Swal.fire(data.error);
+  }
+  Swal.fire({
+      title: 'Order Placed',
+      text: 'Your Order has been placed.',
+      icon: 'success',
+      showCancelButton: true,
+      cancelButtonText: 'Continue Browsing',
+      showConfirmButton: true,
+      confirmButtonText: 'Go To Your Order',
+      allowOutsideClick: false
+      }).then((result) => {
+          if (result.isConfirmed) {
+              window.location.href = '/user/orderDetails/'+data.id;
+          }else{
+            window.location.href = '/product-list/list';
+          }
+      });
+})
+.catch((err)=>{
+  Swal.fire("Some Error Occured.");
+})
+  }
+};
+
+var rzp1 = new Razorpay(options);
+
+rzp1.on('payment.failed', function (response){
+
+fetch("/user/razorpay-failure",{
+  method:"POST",
+  headers:{
+    "Content-Type":"application/json"
+  },
+  body:JSON.stringify({
+    json_form,
+    action
+})
+})
+.then((response)=>{
+if(response.ok){
+  return response.json();
+}else{
+  throw new Error("Something Happened")
+}
+})
+.then((data)=>window.location.href=/user/orderDetails/${data.id})
+.catch((err)=>console.log(err.message))
+
+});
+
+rzp1.open();
+})
+  }else{
+    loader.style.display="none";
+    Swal.fire({
+        title: 'Order Placed',
+        text: 'Your Order has been placed.',
+        icon: 'success',
+        showCancelButton: true,
+        cancelButtonText: 'Continue Browsing',
+        showConfirmButton: true,
+        confirmButtonText: 'Go To Your Order',
+        allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/user/orderDetails/'+data.id;
+            }else{
+              window.location.href = '/product-list/list';
+            }
+        });
+  }
+
+})
+.catch((err)=>{
+  Swal.fire("Some Error Occured.");
+})

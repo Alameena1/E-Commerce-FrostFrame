@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunglass Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/asset/user/sunglass.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .pagination {
+            color: white;
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 5px 10px;
+            margin-left: 5px;
+            background-color: #555;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .pagination a.active {
+            background-color: #fff;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown.active .dropdown-content {
+            display: block;
+        }
+
+        .product-card {
+            position: relative;
+        }
+
+        .wishlist-icon {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .wishlist-icon .fa-heart {
+            font-size: 24px;
+            color: grey;
+        }
+
+        .wishlist-icon .fa-heart.active {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="/">
+                    <img src="/img/Screenshot 2024-04-13 105644.png" alt="Logo">
+                </a>
+            </div>
+            <div class="nav-options">
+                <div class="dropdown">
+                    <div class="dropdown-content">
+                        <% unblockCategory.forEach((categories, index)=> { %>
+                            <a href="/sunglass">
+                                <%= categories.categoryName %>
+                            </a>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-icons">
+                <ul>
+                    <form action="/sunglass" class="search-bar">
+                        <input type="text" name="query" placeholder="Search...">
+                        <button type="submit"><box-icon name='search'><i class='bx bx-search'></i></box-icon></button>
+                    </form>
+                    <li><a href="/cart"><i class="bi bi-cart-fill" style="color: white;"></i></a></li>
+                    <li><a href="/profile"><i class="bi bi-person-circle" style="color: white;"></i></a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <h1 class="hedd">FROSTFRAME</h1>
+
+    <a href="/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="black"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+    </a>
+
+
+    <div class="filter-container" style="text-align: right;">
+        <label for="sort-filter">Filetr:</label>
+        <select id="sort-filter">
+            <option value="featured">Featured</option>
+            <option value="new-arrivals">New Arrivals</option>
+            <option value="price-low-high">Price: Low to High</option>
+            <option value="price-high-low">Price: High to Low</option>
+            <option value="a-z">A - Z</option>
+            <option value="z-a">Z - A</option>
+        </select>
+    </div>
+    
+    <div class="container">
+        <% newProducts.forEach(product => { %>
+            <div class="product-card" data-arrival="<%= product.arrivalDate %>">
+                <div class="product-image">
+                    <img src="<%= product.productImages[0] %>" alt="Product Image">
+                    <div class="overlay" style="padding-bottom: 10px;">
+                        <div class="overlay-content">
+                            <h1 class="product-name" style="color:rgba(255, 255, 255, 0.948);"><%= product.name %></h1>
+                            <a href="/productDetails/<%= product._id %>" class="btn view-details common-btn">View Details</a>
+                            <% if (product.stock > 0) { %>
+                                <form action="/addProductCart/<%= product._id %>" method="post">
+                                    <button type="submit" class="btn view-details common-btn">Add to Cart</button>
+                                </form>
+                            <% } else { %>
+                                <button style="color: white;" type="button" class="btn view-details common-btn" disabled>Out of Stock</button>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <p class="product-price">₹<%= product.price %></p>
+                    <p class="product-name-hidden" style="display: none;"><%= product.name %></p>
+                </div>
+                <div class="wishlist-icon" data-product-id="<%= product._id %>">
+                    <% if (wishlist.some(item => item.productId.toString() === product._id.toString())) { %>
+                        <i class="fa fa-heart active"></i>
+                    <% } else { %>
+                        <i class="fa fa-heart"></i>
+                    <% } %>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+    
+    
+    <div class="pagination">
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <a href="/sunglass?page=<%= i %>&categoryName=<%= categoryName %>"
+                class="<%= currentPage === i ? 'active' : '' %>">
+                <%= i %>
+            </a>
+        <% } %>
+    </div>
+
+    <%- include('footer') %>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.wishlist-icon').forEach(icon => {
+                const isInWishlist = icon.dataset.isInWishlist === 'true';
+                const heartIcon = icon.querySelector('.fa-heart');
+                if (isInWishlist) {
+                    heartIcon.classList.add('active');
+                }
+    
+                icon.addEventListener('click', function () {
+                    heartIcon.classList.toggle('active');
+                    const productId = icon.getAttribute('data-product-id');
+                    const wishlistStorageKey = `wishlist_${productId}`;
+    
+                    localStorage.setItem(wishlistStorageKey, heartIcon.classList.contains('active'));
+    
+                    fetch('/addtowishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ productId: productId }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                });
+            });
+        });
+    </script>
+
+
+
+<!-- filetr -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const sortFilter = document.getElementById('sort-filter');
+
+    sortFilter.addEventListener('change', function () {
+        const selectedSort = this.value;
+        const productsContainer = document.querySelector('.container');
+        const products = Array.from(productsContainer.querySelectorAll('.product-card'));
+
+        let sortedProducts;
+
+        switch (selectedSort) {
+            case 'price-low-high':
+                sortedProducts = products.sort((a, b) => {
+                    const priceA = parseInt(a.querySelector('.product-price').innerText.replace('₹', ''));
+                    const priceB = parseInt(b.querySelector('.product-price').innerText.replace('₹', ''));
+                    return priceA - priceB;
+                });
+                break;
+            case 'price-high-low':
+                sortedProducts = products.sort((a, b) => {
+                    const priceA = parseInt(a.querySelector('.product-price').innerText.replace('₹', ''));
+                    const priceB = parseInt(b.querySelector('.product-price').innerText.replace('₹', ''));
+                    return priceB - priceA;
+                });
+                break;
+            case 'a-z':
+                sortedProducts = products.sort((a, b) => {
+                    const nameA = a.querySelector('.product-name-hidden').innerText.toUpperCase();
+                    const nameB = b.querySelector('.product-name-hidden').innerText.toUpperCase();
+                    return nameA.localeCompare(nameB);
+                });
+                break;
+            case 'z-a':
+                sortedProducts = products.sort((a, b) => {
+                    const nameA = a.querySelector('.product-name-hidden').innerText.toUpperCase();
+                    const nameB = b.querySelector('.product-name-hidden').innerText.toUpperCase();
+                    return nameB.localeCompare(nameA);
+                });
+                break;
+            case 'new-arrivals':
+                sortedProducts = products.sort((a, b) => {
+                    const dateA = new Date(a.dataset.arrival);
+                    const dateB = new Date(b.dataset.arrival);
+                    return dateB - dateA;
+                });
+                break;
+            case 'featured':
+            default:
+                sortedProducts = products; // Assuming featured is the default order
+        }
+
+        productsContainer.innerHTML = '';
+        sortedProducts.forEach(product => productsContainer.appendChild(product));
+    });
+});
+
+
+</script>
+
+
+<!-- filetr -->
+    
+</body>
+</html>

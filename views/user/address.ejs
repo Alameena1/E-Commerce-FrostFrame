@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Profile with Data and Skills - Bootdey.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+
+
+
+    <style type="text/css">
+        body {
+            color: #1a202c;
+            text-align: left;
+            background-color: #e2e8f0;
+        }
+
+        .main-body {
+            padding: 15px;
+        }
+
+        .card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid rgba(0, 0, 0, .125);
+            border-radius: .25rem;
+        }
+
+        .card-body {
+            flex: 1 1 auto;
+            min-height: 1px;
+            padding: 1rem;
+        }
+
+        .gutters-sm {
+            margin-right: -8px;
+            margin-left: -8px;
+        }
+
+        .gutters-sm>.col,
+        .gutters-sm>[class*=col-] {
+            padding-right: 8px;
+            padding-left: 8px;
+        }
+
+        .mb-3,
+        .my-3 {
+            margin-bottom: 1rem !important;
+        }
+
+        .bg-gray-300 {
+            background-color: #e2e8f0;
+        }
+
+        .h-100 {
+            height: 100% !important;
+        }
+
+        .shadow-none {
+            box-shadow: none !important;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        img {
+            height: 100%;
+            width: 100%;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: #000000;
+            color: #fff;
+            height: 110px;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .nav-icons ul,
+        .nav-options ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-icons li,
+        .nav-options li {
+            margin-left: 20px;
+        }
+
+        .nav-icons img {
+            height: 30px;
+        }
+
+        .nav-options a {
+            text-decoration: none;
+            color: #fff;
+            margin: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-icons,
+            .nav-options {
+                margin-top: 10px;
+            }
+
+            .nav-icons ul,
+            .nav-options ul {
+                display: flex;
+            }
+
+            .nav-icons li,
+            .nav-options li {
+                margin-left: 50px;
+            }
+        }
+
+        .nav-icons ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-icons li {
+            margin-right: 20px;
+        }
+
+        .nav-icons li:last-child {
+            margin-right: 0;
+        }
+
+        .nav-icons form {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-icons input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .nav-icons button {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            margin-left: 10px;
+            color: white;
+        }
+
+        .search-bar {
+            width: 250px;
+            height: 45px;
+            background: transparent;
+            border: 2px solid #e4e4e4;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #e4e4e4;
+            padding-left: 10px;
+        }
+
+        .search-bar input::placeholder {
+            color: #e4e4e4;
+        }
+
+        .search-bar button {
+            width: 40px;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: white;
+        }
+
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 50px 0;
+        }
+
+        .footer .containerr {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .footer .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .footer .col-md-4 {
+            flex: 0 0 calc(33.333% - 20px);
+            max-width: calc(33.333% - 20px);
+            margin-bottom: 20px;
+        }
+
+        .footer h5 {
+            color: #fff;
+        }
+
+        .footer p {
+            margin: 10px 0;
+        }
+
+        .footer .social-icons li {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .footer .social-icons li a {
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .footer .quick-links li {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .footer .quick-links li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer .quick-links li a:hover {
+            text-decoration: underline;
+        }
+
+        .imgSecond {
+            display: flex;
+            width: 35%;
+        }
+
+        /* New CSS class for active state */
+        .active {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .modal.show {
+            display: block;
+            opacity: 1;
+            transition: opacity 0.15s linear;
+        }
+    </style>
+</head>
+
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/"><img src="/img/Screenshot 2024-04-13 105644.png" alt="Logo"></a>
+        </div>
+        <div class="nav-options">
+            <div class="dropdown-content">
+                <% newcategory.forEach((categories, index)=> { %>
+                    <a href="/sunglass">
+                        <%= categories.categoryName %>
+                    </a>
+                    <% }); %>
+            </div>
+        </div>
+        <div class="nav-icons">
+            <ul>
+                <form action="#" class="search-bar">
+                    <input type="text" placeholder="Search...">
+                    <button type="submit"><box-icon name='search'><i class='bx bx-search'></i></box-icon></button>
+                </form>
+                <% if (loggedIn) { %>
+                    <form action="/logout" method="post">
+                        <button type="submit">Logout</button>
+                    </form>
+                    <% } else { %>
+                        <form action="/logout" method="post">
+                            <button type="submit">Login</button>
+                        </form>
+                        <% } %>
+                            <form action="/cart" method="get">
+                                <button type="submit"><i class="bi bi-cart-fill" style="color: white;"></i></button>
+                            </form>
+                            <li><a href="your_profile_link"><i class="bi bi-person-circle"
+                                        style="color: white;"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-body">
+            <div class="row gutters-sm">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center text-center">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
+                                    class="rounded-circle" width="150">
+                                <div class="mt-3">
+                                    <h4>
+                                        <%= user.name %>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <a href="/profile" style="color: black;"><h6>Personal Information</h6></a>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 style="cursor: pointer;" class="cursor-pointer"
+                                    onclick="showSection('manageAddresses', this)">Manage Addresses</h6>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                             
+                                    <a href="/order" style="color: black;">My Orders</a>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 style="cursor: pointer;">Wallet</h6>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 style="cursor: pointer;">Coupon</h6>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 style="cursor: pointer;">Wish List</h6>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <!-- Personal Information Section -->
+                    <!-- Personal Information Section -->
+               
+
+                    <div id="manageAddresses" class="card mb-3 info-section">
+                        <div class="card-body">
+                            <h6 class="mb-3">Addresses</h6>
+                            <button class="btn btn-primary mb-3" onclick="openAddAddressModal()">Add Address</button>
+                    
+                            <!-- Iterate over addresses -->
+                            <% address.forEach(function(address) { %>
+                            <div class="address-item" data-id="<%= address._id %>">
+                                <div class="row">
+                                    <div class="col-sm-9 text-secondary address-text">
+                                        <%= address.address %>, <%= address.locality %>, <%= address.state %>, <%=
+                                        address.pincode %>
+                                    </div>
+                                    <div class="col-sm-3 text-right">
+                                        <button class="btn btn-sm btn-secondary"
+                                            onclick="openEditAddressModal('<%= JSON.stringify(address) %>')">Edit</button>
+                                        <!-- Add delete button -->
+                                        <button class="btn btn-sm btn-danger" onclick="deleteAddress('<%= address._id %>')">Delete</button>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                    
+
+                    <!-- My Orders Section -->
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Add Address Modal -->
+    <div id="addAddressModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form onsubmit="addAddress(event)">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Address</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="add-name">Name</label>
+                            <input type="text" class="form-control" id="add-name" name="name">
+                            <label for="add-address">Address</label>
+                            <input type="text" class="form-control" id="add-address" name="address">
+                            <label for="add-phone">Phone</label>
+                            <input type="text" class="form-control" id="add-phone" name="phone">
+                            <label for="add-locality">Locality</label>
+                            <input type="text" class="form-control" id="add-locality" name="locality">
+                            <label for="add-pincode">Pincode</label>
+                            <input type="text" class="form-control" id="add-pincode" name="pincode">
+                            <label for="add-state">State</label>
+                            <input type="text" class="form-control" id="add-state" name="state">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Address Modal -->
+    <div id="editAddressModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="editAddressForm" onsubmit="editAddress(event)">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Address</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="hidden" id="edit-id" name="id">
+                            <label for="edit-name">Name</label>
+                            <input type="text" class="form-control" id="edit-name" name="name">
+                            <label for="edit-address">Address</label>
+                            <input type="text" class="form-control" id="edit-address" name="address" >
+                            <label for="edit-phone">Phone</label>
+                            <input type="text" class="form-control" id="edit-phone" name="phone" >
+                            <label for="edit-locality">Locality</label>
+                            <input type="text" class="form-control" id="edit-locality" name="locality" >
+                            <label for="edit-pincode">Pincode</label>
+                            <input type="text" class="form-control" id="edit-pincode" name="pincode" >
+                            <label for="edit-state">State</label>
+                            <input type="text" class="form-control" id="edit-state" name="state" >
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function openAddAddressModal() {
+            $('#addAddressModal').modal('show');
+        }
+    
+        function addAddress(event) {
+            event.preventDefault();
+    
+            // Collect form data
+            const name = document.getElementById('add-name').value;
+            const address = document.getElementById('add-address').value;
+            const phone = document.getElementById('add-phone').value;
+            const locality = document.getElementById('add-locality').value;
+            const pincode = document.getElementById('add-pincode').value;
+            const state = document.getElementById('add-state').value;
+    
+            const data = { name, address, phone, locality, pincode, state };
+   
+            // Perform fetch request
+            fetch('/addAddress', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => {
+                console.log("Raw response:", response); // Log raw response
+                return response.json();
+            })
+            .then(data => {
+                console.log("Response from server:", data); // Log parsed response data
+                if (data.message === 'Address added successfully') {
+                    location.reload(); // Reload the page
+                    $('#addAddressModal').modal('hide'); // Hide the modal
+                } else {
+                    // Handle error case (optional)
+                    console.error('Failed to add address:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error); // Log error
+            });
+        }
+    </script>
+
+
+
+<script>
+    function openEditAddressModal(data) {
+        // Parse the JSON string into an object
+        let address = JSON.parse(data);
+        if (address) {
+            // Populate the form fields with the address data
+            document.getElementById('edit-id').value = address._id;
+            document.getElementById('edit-name').value = address.name;
+            document.getElementById('edit-address').value = address.address;
+            document.getElementById('edit-phone').value = address.phone;
+            document.getElementById('edit-locality').value = address.locality;
+            document.getElementById('edit-pincode').value = address.pincode;
+            document.getElementById('edit-state').value = address.state;
+
+            // Show the modal
+            $('#editAddressModal').modal('show');
+        }
+    }
+
+    function closeModal() {
+        $('#editAddressModal').modal('hide');
+    }
+
+    function editAddress(event) {
+        event.preventDefault();
+        // Logic to edit the address
+        console.log('Form submitted');
+        // Example code for editing the address
+        closeModal();
+    }
+
+    // Event listener to close the modal when clicking outside of it
+    $('#editAddressModal').on('hidden.bs.modal', function () {
+        // Clear form fields when modal is closed
+        $('#editAddressForm').trigger('reset');
+    });
+
+    // Close modal when cancel button is clicked
+    document.getElementById('edit-cancel-btn').addEventListener('click', function () {
+        closeModal();
+    });
+
+    // Close modal when close button is clicked
+    document.getElementById('edit-close-btn').addEventListener('click', function () {
+        closeModal();
+    });
+
+    // Function to fetch and update address details
+    function editAddress(event) {
+        event.preventDefault();
+        // Collect form data
+        const id = document.getElementById('edit-id').value;
+        const name = document.getElementById('edit-name').value;
+        const address = document.getElementById('edit-address').value;
+        const phone = document.getElementById('edit-phone').value;
+        const locality = document.getElementById('edit-locality').value;
+        const pincode = document.getElementById('edit-pincode').value;
+        const state = document.getElementById('edit-state').value;
+
+        const data = { id, name, address, phone, locality, pincode, state };
+
+        // Log the data being sent
+        console.log("Data to be sent:", data);
+
+        // Log the fetch request details
+        console.log("Initiating fetch request to /updateAddress with options:", {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        // Perform fetch request
+        fetch(`/updateAddress/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => {
+                // Log raw response
+                console.log("Raw response:", response);
+                return response.json();
+            })
+            .then(data => {
+                // Log parsed response data
+                console.log("Response from server:", data);
+                if (data.message === 'Address updated successfully') {
+                  
+                    closeModal();
+                    // Optionally, you can perform any additional actions after successful update
+                } else {
+                    // Handle error response
+                }
+            })
+            .catch(error => {
+                // Log error
+                console.error('Error:', error);
+                // Handle fetch error
+            });
+    }
+</script>
+
+  
+
+    <!-- Scripts -->
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showSection(sectionId, element) {
+            var sections = document.getElementsByClassName('info-section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].style.display = 'none';
+            }
+            document.getElementById(sectionId).style.display = 'block';
+
+            var items = document.querySelectorAll('.list-group-item h6');
+            items.forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function toggleEditMode() {
+            var viewElements = document.querySelectorAll('.view-mode');
+            var editElements = document.querySelectorAll('.edit-mode');
+
+            viewElements.forEach(element => {
+                element.style.display = element.style.display === 'none' ? 'block' : 'none';
+            });
+
+            editElements.forEach(element => {
+                element.style.display = element.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        // document.getElementById('personalInfoForm').addEventListener('submit', function(event) {
+        //     event.preventDefault();
+
+        //     // Add the logic to save the form data, e.g., via AJAX request.
+        //     // For example:
+        //     /*
+        //     var formData = new FormData(this);
+        //     fetch('/updateProfile', {
+        //         method: 'POST',
+        //         body: formData
+        //     }).then(response => response.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             alert('Profile updated successfully');
+        //             toggleEditMode();
+        //             // Optionally update the view-mode elements with the new data
+        //         } else {
+        //             alert('Failed to update profile');
+        //         }
+        //     }).catch(error => console.error('Error:', error));
+        //     */
+
+        //     // For now, we'll just toggle the edit mode without saving.
+        //     toggleEditMode();
+        // });
+    </script>
+    <script>
+        let editAddressId = null;
+
+
+        function openAddressModal(addressId = null) {
+            editAddressId = addressId;
+            if (addressId) {
+                // Fetch address data and fill the form for editing
+                const addressElement = document.querySelector(`.address-item[data-id="${addressId}"] .address-text`);
+                document.getElementById('address').value = addressElement.textContent.trim();
+            } else {
+                document.getElementById('address').value = '';
+            }
+            $('#addressModal').modal('show');
+        }
+
+        document.getElementById('editAddressForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const address = document.getElementById('address').value;
+
+            const url = editAddressId ? `/updateAddress/${editAddressId}` : '/addAddress';
+            const method = editAddressId ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ address })
+                });
+
+                if (response.ok) {
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert('Failed to save address');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to save address');
+            }
+        });
+    </script>
+
+    <SCRipt>
+    function deleteAddress(addressId) {
+        // Confirm deletion
+      
+            // Perform delete operation via fetch or AJAX
+            fetch(`/deleteAddress/${addressId}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (response.ok) {
+                    // If deletion is successful, reload the page or update the address list
+                    location.reload(); // Reload the page
+                } else {
+                    // If deletion fails, show an error message
+                    alert('Failed to delete address');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to delete address');
+            });
+        
+    }
+    </SCRipt>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+
+<script>
+    function addAddress(event) {
+    event.preventDefault(); // Prevent the form from submitting by default
+
+    // Get form inputs
+    var nameInput = document.getElementById('add-name');
+    var addressInput = document.getElementById('add-address');
+    var phoneInput = document.getElementById('add-phone');
+    var localityInput = document.getElementById('add-locality');
+    var pincodeInput = document.getElementById('add-pincode');
+    var stateInput = document.getElementById('add-state');
+
+    var name = nameInput.value.trim();
+    var address = addressInput.value.trim();
+    var phone = phoneInput.value.trim();
+    var locality = localityInput.value.trim();
+    var pincode = pincodeInput.value.trim();
+    var state = stateInput.value.trim();
+
+    // Clear previous error messages
+    clearErrorMessages();
+
+    // Validation
+    var isValid = true;
+
+    if (name === '') {
+        isValid = false;
+        displayErrorMessage(nameInput, 'Please enter your name');
+    }
+
+    if (address === '') {
+        isValid = false;
+        displayErrorMessage(addressInput, 'Please enter your address');
+    }
+
+    if (phone === '') {
+        isValid = false;
+        displayErrorMessage(phoneInput, 'Please enter your phone number');
+    } else if (!/^\d{10}$/.test(phone)) {
+        isValid = false;
+        displayErrorMessage(phoneInput, 'Please enter a valid 10-digit phone number');
+    }
+
+    if (locality === '') {
+        isValid = false;
+        displayErrorMessage(localityInput, 'Please enter your locality');
+    }
+
+    if (pincode === '') {
+        isValid = false;
+        displayErrorMessage(pincodeInput, 'Please enter your pincode');
+    } else if (!/^\d{6}$/.test(pincode)) {
+        isValid = false;
+        displayErrorMessage(pincodeInput, 'Please enter a valid 6-digit pincode');
+    }
+
+    if (state === '') {
+        isValid = false;
+        displayErrorMessage(stateInput, 'Please enter your state');
+    }
+
+    if (isValid) {
+        // If all validations pass, you can proceed to save the address
+        // For demonstration, let's just log the form data
+        console.log('Name:', name);
+        console.log('Address:', address);
+        console.log('Phone:', phone);
+        console.log('Locality:', locality);
+        console.log('Pincode:', pincode);
+        console.log('State:', state);
+
+        // Optionally, you can reset the form after submission
+        document.getElementById('add-address-form').reset();
+
+        // Close the modal if you have one
+        $('#addAddressModal').modal('hide');
+    }
+}
+
+function displayErrorMessage(inputElement, message) {
+    var errorElement = document.createElement('div');
+    errorElement.className = 'invalid-feedback';
+    errorElement.innerHTML = message;
+    inputElement.classList.add('is-invalid');
+    inputElement.parentNode.appendChild(errorElement);
+}
+
+function clearErrorMessages() {
+    var errorMessages = document.querySelectorAll('.invalid-feedback');
+    errorMessages.forEach(function(errorMessage) {
+        errorMessage.parentNode.removeChild(errorMessage);
+    });
+
+    var inputs = document.querySelectorAll('.is-invalid');
+    inputs.forEach(function(input) {
+        input.classList.remove('is-invalid');
+    });
+}
+
+</script>
+    <script>
+        function editAddress(event) {
+    event.preventDefault(); // Prevent the form from submitting by default
+
+    // Get form inputs
+    var nameInput = document.getElementById('edit-name');
+    var addressInput = document.getElementById('edit-address');
+    var phoneInput = document.getElementById('edit-phone');
+    var localityInput = document.getElementById('edit-locality');
+    var pincodeInput = document.getElementById('edit-pincode');
+    var stateInput = document.getElementById('edit-state');
+
+    var name = nameInput.value.trim();
+    var address = addressInput.value.trim();
+    var phone = phoneInput.value.trim();
+    var locality = localityInput.value.trim();
+    var pincode = pincodeInput.value.trim();
+    var state = stateInput.value.trim();
+
+    // Clear previous error messages
+    clearErrorMessages();
+
+    // Validation
+    var isValid = true;
+
+    if (name === '') {
+        isValid = false;
+        displayErrorMessage(nameInput, 'Please enter the name');
+    }
+
+    if (address === '') {
+        isValid = false;
+        displayErrorMessage(addressInput, 'Please enter the address');
+    }
+
+    if (phone === '') {
+        isValid = false;
+        displayErrorMessage(phoneInput, 'Please enter the phone number');
+    } else if (!/^\d{10}$/.test(phone)) {
+        isValid = false;
+        displayErrorMessage(phoneInput, 'Please enter a valid 10-digit phone number');
+    }
+
+    if (locality === '') {
+        isValid = false;
+        displayErrorMessage(localityInput, 'Please enter the locality');
+    }
+
+    if (pincode === '') {
+        isValid = false;
+        displayErrorMessage(pincodeInput, 'Please enter the pincode');
+    } else if (!/^\d{6}$/.test(pincode)) {
+        isValid = false;
+        displayErrorMessage(pincodeInput, 'Please enter a valid 6-digit pincode');
+    }
+
+    if (state === '') {
+        isValid = false;
+        displayErrorMessage(stateInput, 'Please enter the state');
+    }
+
+    if (isValid) {
+        // If all validations pass, you can proceed to save the edited address
+        // For demonstration, let's just log the form data
+        console.log('Name:', name);
+        console.log('Address:', address);
+        console.log('Phone:', phone);
+        console.log('Locality:', locality);
+        console.log('Pincode:', pincode);
+        console.log('State:', state);
+
+        // Optionally, you can reset the form after submission
+        document.getElementById('editAddressForm').reset();
+
+        // Close the modal if you have one
+        $('#editAddressModal').modal('hide');
+    }
+}
+
+    </script>
+</body>
+
+</html>

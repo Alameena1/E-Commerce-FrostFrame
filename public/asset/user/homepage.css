@@ -1,0 +1,317 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+img{
+    height: 100%;
+    width: 100%;
+}
+
+/* Navbar styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background-color: #000000; /* Change as needed */
+    color: #fff; /* Change as needed */
+}
+
+.logo img {
+    height: 50px; /* Adjust as needed */
+}
+
+.nav-icons ul,
+.nav-options ul {
+    list-style: none;
+    display: flex;
+}
+
+.nav-icons li,
+.nav-options li {
+    margin-left: 20px; /* Adjust as needed */
+}
+
+.nav-icons img {
+    height: 30px; /* Adjust as needed */
+}
+
+.nav-options a {
+    text-decoration: none;
+    color: #fff; /* Change as needed */
+    margin: 30px;
+}
+
+/* Media Query for responsiveness */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-icons,
+    .nav-options {
+        margin-top: 10px;
+    }
+
+    .nav-icons ul,
+    .nav-options ul {
+        display: flex;
+    }
+
+    .nav-icons li,
+    .nav-options li {
+        margin-left: 50px; /* Adjust as needed */
+    }
+}
+
+.nav-icons ul {
+    list-style: none;
+    display: flex;
+    align-items: center; /* Center the items vertically */
+}
+
+.nav-icons li {
+    margin-right: 20px; /* Adjust spacing between icons */
+}
+
+.nav-icons li:last-child {
+    margin-right: 0; /* Remove margin from the last item */
+}
+
+.nav-icons form {
+    display: flex;
+    align-items: center;
+}
+
+.nav-icons input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.nav-icons button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    margin-left: 10px;
+    color: white;
+}
+
+/* Adjust styles as needed */
+.search-bar {
+    width: 250px;
+    height: 45px;
+    background: transparent;
+    border: 2px solid #e4e4e4;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #e4e4e4;
+    padding-left: 10px;
+}
+
+.search-bar input::placeholder {
+    color: #e4e4e4;
+}
+
+.search-bar button {
+    width: 40px;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+}
+
+.first_image {
+    position: relative;
+    width: 100%;
+    height: 750px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.first_image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image_content {
+    position: absolute;
+    bottom: 20px; /* Adjust vertical position */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: #fff;
+}
+
+.image_content h3 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.buttons {
+    margin-top: 20px; /* Adjust vertical space between text and buttons */
+}
+
+.buttons button {
+    margin: 0 10px; /* Adjust horizontal space between buttons */
+    padding: 10px 70px; /* Adjust button padding */
+    background-color: #D9D9D9; /* Adjust button background color */
+    color: #000000; /* Adjust button text color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.buttons h6 {
+    margin: 0;
+    font-size: 12px;
+}
+
+.buttons .BTN1:hover {
+    background-color: #706c6c;
+    overflow: hidden;
+}
+
+.buttons .BTN2:hover {
+    background-color: #706c6c;
+    overflow: hidden;
+}
+
+.col {
+    padding: 50px;
+    box-shadow: red;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.product-item {
+    margin: 10px;
+    padding: 10px;
+    border: 0px solid #ddd;
+    text-align: center;
+    width: calc(33.33% - 20px); /* Adjust width to 33.33% */
+}
+
+.product-item img {
+    width: 100%;
+    height: auto;
+}
+
+.product-info {
+    margin-top: 10px;
+}
+
+.product-name {
+    font-weight: bold;
+}
+
+.product-price {
+    color: #c70000;
+}
+
+/* Default styling for product container */
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 350px;
+}
+
+/* Media query for viewport width 1000px */
+@media screen and (max-width: 1000px) {
+    .product-container {
+        width: 100%; /* Set width to 100% */
+        justify-content: space-between; /* Ensure equal space between items */
+    }
+
+    .product-card {
+        width: calc(50% - 10px); /* Calculate width to fit two items in a line with spacing */
+        margin-bottom: 20px; /* Adjust spacing between rows */
+    }
+}
+
+.homeh6 {
+    text-align: center;
+
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.product-carousel {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.product-list {
+    display: flex;
+    width: max-content;
+    animation: carousel-animation 10s infinite linear;
+}
+
+
+.product-item {
+    flex: 0 0 auto;
+    width: 300px; /* Adjust as needed */
+    margin: 0 10px; /* Adjust as needed */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.product-item img {
+    width: 100%;
+    height: auto;
+}
+
+.product-info {
+    padding: 10px;
+}
+
+.product-name {
+    font-weight: bold;
+}
+
+.product-price {
+    color: green;
+}
+
+@keyframes carousel-animation {
+    0% {
+        transform: translateX(0);
+    }
+    50%{
+        transform: translateX(calc(-100% + 310px))
+    }
+    100% {
+        transform: translateX(0); /* Adjust according to width and margin of .product-item */
+    }
+}

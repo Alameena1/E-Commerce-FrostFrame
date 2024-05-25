@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/asset/admin/productmanagement.css">
+
+    
+   <style>
+  .blocked {
+    background-color: red;
+    color: white;
+    cursor: not-allowed;
+  }
+  .sidebar ul li a.active, .sidebar ul li a:hover {
+            background-color: #555;
+            color: #fff;
+        }
+        .pagination {
+        color: white;
+        margin-top: 20px;
+        text-align: right; /* Align the pagination to the right */
+    }
+
+    .pagination a {
+        display: inline-block;
+        padding: 5px 10px;
+        margin-left: 5px; /* Add some space between pagination links */
+        background-color: #555;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .pagination a.active {
+        background-color: #fff;
+        color: #555;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Coupon Management</h2>
+        <ul>
+            <li><a href="/admin/dashbord" data-page="dashboard">Dashboard</a></li>
+            <li><a href="/admin/usermanagement" data-page="usermanagement">User Management</a></li>
+            <li><a href="/admin/productmanagement" data-page="productmanagement">Product Management</a></li>
+            <li><a href="/admin/categorymanagement" data-page="categorymanagement">Category Management</a></li>
+            <li><a href="/admin/order" data-page="order">Order</a></li>
+            <li><a href="#" data-page="couponreport">Coupon Report</a></li>
+            <li><a href="/admin/salesreport" data-page="salesreport">Sales Report</a></li>
+
+            <li><a href="/admin/logout" data-page="logout">Logout</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="box">
+            <h2>Coupon Management</h2>
+            <div class="add-product">
+                <a href="/admin/addcoupon"><button>Add Coupon</button></a>
+            </div>
+            <table>
+                <tr>
+                    <th>S.No</th>
+                    <th>Coupon code</th>
+                    <th>Discount(%)</th>
+                    <th>Create Date</th>
+                    <th>EXpiry Date</th>
+                    <th>Edit</th>
+                    <th>Action</th>
+                  
+                </tr>
+           
+                <% coupons.forEach((coupon, index) => { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= coupon.code %></td>
+                        <td><%= coupon.discountValue %></td>
+                        <td><%= coupon.usedBy.toISOString().split('T')[0]%></td>
+                        <td><%= coupon.expirationDate.toISOString().split('T')[0] %></td>
+                        <td><a href="/admin/editcoupon/<%= coupon._id %>"><button>Edit</button></a></td>
+                        <td>
+                            <button onclick="deleteCoupon('<%= coupon._id %>')">Delete</button>
+                        </td>
+                      
+                    </tr>
+                <% }); %>
+           
+            </table>
+   
+                    <!-- Your table content -->
+            
+                  
+
+        </div>
+    </div>
+    
+    
+    <script>
+        function toggleBlock() {
+            var button = document.getElementById("blockButton");
+            if (button.classList.contains("blocked")) {
+                button.classList.remove("blocked");
+                button.innerHTML = "Block";
+            } else {
+                button.classList.add("blocked");
+                button.innerHTML = "Unblock";
+            }
+        }
+  
+        document.addEventListener('DOMContentLoaded', function() {
+            var links = document.querySelectorAll('.sidebar ul li a');
+            var activePage = localStorage.getItem('activePage');
+
+            if (activePage) {
+                // Remove the active class from all links
+                links.forEach(function(link) {
+                    link.classList.remove('active');
+                });
+
+                // Add the active class to the stored active link
+                var activeLink = document.querySelector('.sidebar ul li a[data-page="' + activePage + '"]');
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+
+            links.forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    // Remove the active class from all links
+                    links.forEach(function(l) {
+                        l.classList.remove('active');
+                    });
+
+                    // Add the active class to the clicked link
+                    link.classList.add('active');
+
+                    // Store the active link in localStorage
+                    localStorage.setItem('activePage', link.getAttribute('data-page'));
+                });
+            });
+        });
+    </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function deleteCoupon(couponId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this coupon!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin/deletecoupon/${couponId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete coupon');
+                    }
+                    return response.json(); // Assuming JSON response handling
+                })
+                .then(data => {
+                    Swal.fire(
+                        'Deleted!',
+                        'The coupon has been deleted.',
+                        'success'
+                    ).then(() => {
+                        // Optionally reload the page or update the coupon list
+                        location.reload();
+                    });
+                })
+                .catch(error => {
+                    console.error('Error deleting coupon:', error);
+                    Swal.fire(
+                        'Error!',
+                        'Failed to delete the coupon.',
+                        'error'
+                    );
+                });
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

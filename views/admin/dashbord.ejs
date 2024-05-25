@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/asset/admin/dashbord.css">
+    <style>
+        .sidebar ul li a.active, .sidebar ul li a:hover {
+            background-color: #555;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><a href="/admin/dashbord" data-page="dashboard">Dashboard</a></li>
+            <li><a href="/admin/usermanagement" data-page="usermanagement">User Management</a></li>
+            <li><a href="/admin/productmanagement" data-page="productmanagement">Product Management</a></li>
+            <li><a href="/admin/categorymanagement" data-page="categorymanagement">Category Management</a></li>
+            <li><a href="/admin/order" data-page="order">Order</a></li>
+            <li><a href="/admin/coupon" data-page="couponreport">Coupon Report</a></li>
+            <li><a href="/admin/salesreport" data-page="salesreport">Sales Report</a></li>
+            <li><a href="/admin/logout" data-page="logout">Logout</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="box">
+            <h2>Dashboard</h2>
+            <!-- Your dashboard content here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var links = document.querySelectorAll('.sidebar ul li a');
+            var activePage = localStorage.getItem('activePage');
+
+            if (activePage) {
+                // Remove the active class from all links
+                links.forEach(function(link) {
+                    link.classList.remove('active');
+                });
+
+                // Add the active class to the stored active link
+                var activeLink = document.querySelector('.sidebar ul li a[data-page="' + activePage + '"]');
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+
+            links.forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    // Remove the active class from all links
+                    links.forEach(function(l) {
+                        l.classList.remove('active');
+                    });
+
+                    // Add the active class to the clicked link
+                    link.classList.add('active');
+
+                    // Store the active link in localStorage
+                    localStorage.setItem('activePage', link.getAttribute('data-page'));
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Profile with Data and Skills - Bootdey.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+
+
+
+    <style type="text/css">
+        body {
+            color: #1a202c;
+            text-align: left;
+            background-color: #e2e8f0;
+        }
+
+        .main-body {
+            padding: 15px;
+        }
+
+        .card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid rgba(0, 0, 0, .125);
+            border-radius: .25rem;
+        }
+
+        .card-body {
+            flex: 1 1 auto;
+            min-height: 1px;
+            padding: 1rem;
+        }
+
+        .gutters-sm {
+            margin-right: -8px;
+            margin-left: -8px;
+        }
+
+        .gutters-sm>.col,
+        .gutters-sm>[class*=col-] {
+            padding-right: 8px;
+            padding-left: 8px;
+        }
+
+        .mb-3,
+        .my-3 {
+            margin-bottom: 1rem !important;
+        }
+
+        .bg-gray-300 {
+            background-color: #e2e8f0;
+        }
+
+        .h-100 {
+            height: 100% !important;
+        }
+
+        .shadow-none {
+            box-shadow: none !important;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        img {
+            height: 100%;
+            width: 100%;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: #000000;
+            color: #fff;
+            height: 110px;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .nav-icons ul,
+        .nav-options ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-icons li,
+        .nav-options li {
+            margin-left: 20px;
+        }
+
+        .nav-icons img {
+            height: 30px;
+        }
+
+        .nav-options a {
+            text-decoration: none;
+            color: #fff;
+            margin: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-icons,
+            .nav-options {
+                margin-top: 10px;
+            }
+
+            .nav-icons ul,
+            .nav-options ul {
+                display: flex;
+            }
+
+            .nav-icons li,
+            .nav-options li {
+                margin-left: 50px;
+            }
+        }
+
+        .nav-icons ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-icons li {
+            margin-right: 20px;
+        }
+
+        .nav-icons li:last-child {
+            margin-right: 0;
+        }
+
+        .nav-icons form {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-icons input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .nav-icons button {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            margin-left: 10px;
+            color: white;
+        }
+
+        .search-bar {
+            width: 250px;
+            height: 45px;
+            background: transparent;
+            border: 2px solid #e4e4e4;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #e4e4e4;
+            padding-left: 10px;
+        }
+
+        .search-bar input::placeholder {
+            color: #e4e4e4;
+        }
+
+        .search-bar button {
+            width: 40px;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: white;
+        }
+
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 50px 0;
+        }
+
+        .footer .containerr {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .footer .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .footer .col-md-4 {
+            flex: 0 0 calc(33.333% - 20px);
+            max-width: calc(33.333% - 20px);
+            margin-bottom: 20px;
+        }
+
+        .footer h5 {
+            color: #fff;
+        }
+
+        .footer p {
+            margin: 10px 0;
+        }
+
+        .footer .social-icons li {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .footer .social-icons li a {
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .footer .quick-links li {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .footer .quick-links li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer .quick-links li a:hover {
+            text-decoration: underline;
+        }
+
+        .imgSecond {
+            display: flex;
+            width: 35%;
+        }
+
+        /* New CSS class for active state */
+        .active {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .modal.show {
+            display: block;
+            opacity: 1;
+            transition: opacity 0.15s linear;
+        }
+    </style>
+</head>
+
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/"><img src="/img/Screenshot 2024-04-13 105644.png" alt="Logo"></a>
+        </div>
+        <div class="nav-options">
+            <div class="dropdown-content">
+                <% newcategory.forEach((categories, index)=> { %>
+                    <a href="/sunglass">
+                        <%= categories.categoryName %>
+                    </a>
+                    <% }); %>
+            </div>
+        </div>
+        <div class="nav-icons">
+            <ul>
+                <form action="#" class="search-bar">
+                    <input type="text" placeholder="Search...">
+                    <button type="submit"><box-icon name='search'><i class='bx bx-search'></i></box-icon></button>
+                </form>
+                <% if (loggedIn) { %>
+                    <form action="/logout" method="post">
+                        <button type="submit">Logout</button>
+                    </form>
+                    <% } else { %>
+                        <form action="/logout" method="post">
+                            <button type="submit">Login</button>
+                        </form>
+                        <% } %>
+                            <form action="/cart" method="get">
+                                <button type="submit"><i class="bi bi-cart-fill" style="color: white;"></i></button>
+                            </form>
+                            <li><a href="your_profile_link"><i class="bi bi-person-circle"
+                                        style="color: white;"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-body">
+            <div class="row gutters-sm">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center text-center">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
+                                    class="rounded-circle" width="150">
+                                <div class="mt-3">
+                                    <h4>
+                                        <%= user.name %>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <a href="/profile" style="color: black;"> Personal Information </a>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+
+                                <a href="/address" style="color: black;">
+                                    <h6>Manage Addresses</h6>
+                                </a>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6>My Orders</h6>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <% if (!user.googleid) { %>
+                                    <a href="/changepassword" style="color: black;">Change Password</a>
+                                    <% } %>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 style="cursor: pointer;">Wallet</h6>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 style="cursor: pointer;">Coupon</h6>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 style="cursor: pointer;">Wish List</h6>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+
+
+
+                <!-- My Orders Section -->
+                <div id="wallet" class="card mb-3 info-section" style="width: 60%;">
+                    <div class="card-body">
+                        <h6 class="mb-3">MY WALLET</h6>
+                        <h2>MY WALLET BALANCE: <%= (user.wallet !== undefined && user.wallet !== null) ? user.wallet : 0 %></h2>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+
+
+    </div>
+    </div>
+
+    </div>
+    </div>
+
+
+
+
+
+
+
+    <!-- Scripts -->
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

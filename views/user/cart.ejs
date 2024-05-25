@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+
+
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        /* nav */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: #000000;
+            color: #fff;
+
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .nav-icons ul,
+        .nav-options ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-icons li,
+        .nav-options li {
+            margin-left: 20px;
+        }
+
+        .nav-icons img {
+            height: 30px;
+        }
+
+        .nav-options a {
+            text-decoration: none;
+            color: #fff;
+            margin: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-icons,
+            .nav-options {
+                margin-top: 10px;
+            }
+
+            .nav-icons ul,
+            .nav-options ul {
+                display: flex;
+            }
+
+            .nav-icons li,
+            .nav-options li {
+                margin-left: 50px;
+            }
+        }
+
+        .nav-icons ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-icons li {
+            margin-right: 20px;
+        }
+
+        .nav-icons li:last-child {
+            margin-right: 0;
+        }
+
+        .nav-icons form {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-icons input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .nav-icons button {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            margin-left: 10px;
+            color: white;
+        }
+
+        .search-bar {
+            width: 250px;
+            height: 45px;
+            background: transparent;
+            border: 2px solid #e4e4e4;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #e4e4e4;
+            padding-left: 10px;
+        }
+
+        .search-bar input::placeholder {
+            color: #e4e4e4;
+        }
+
+        .search-bar button {
+            width: 40px;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: white;
+        }
+
+        /* end nav */
+
+        /* Global settings    ///////////////////////////////////      body      ////////////// */
+        :root {
+            --color-border: #eee;
+            --color-label: #aaa;
+            --font-default: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --font-bold: 'HelveticaNeue-Medium', 'Helvetica Neue Medium';
+        }
+
+        /* Global "table" column settings */
+        .product-image {
+            float: left;
+            width: 20%;
+        }
+
+        .product-details {
+            float: left;
+            width: 37%;
+        }
+
+        .product-price {
+            float: left;
+            width: 12%;
+        }
+
+        .product-quantity {
+            float: left;
+            width: 10%;
+        }
+
+        .product-removal {
+            float: left;
+            width: 9%;
+        }
+
+        .product-line-price {
+            float: left;
+            width: 12%;
+            text-align: right;
+        }
+
+        /* This is used as the traditional .clearfix class */
+        .group:before,
+        .group:after {
+            content: '';
+            display: table;
+        }
+
+        .group:after {
+            clear: both;
+        }
+
+        .group {
+            zoom: 1;
+        }
+
+        /* Apply clearfix in a few places */
+        .shopping-cart:after,
+        .column-labels:after,
+        .product:after,
+        .totals-item:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        /* Apply dollar signs */
+        .product .product-price:before,
+        .product .product-line-price:before,
+        .totals-value:before {
+            content: '₹';
+        }
+
+        /* Body/Header stuff */
+        .shopping-cart {
+            padding: 50px 390px 30px 260px;
+            font-family: var(--font-default);
+            font-weight: 100;
+        }
+
+        h1 {
+            font-weight: 100;
+            text-align: center;
+        }
+
+        label {
+            color: var(--color-label);
+        }
+
+        .shopping-cart {
+            margin-top: -45px;
+        }
+
+        /* Column headers */
+        .column-labels label {
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .column-labels .product-image,
+        .column-labels .product-details,
+        .column-labels .product-removal {
+            text-indent: -9999px;
+        }
+
+        /* Product entries */
+        .product {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid black;
+        }
+
+        .product .product-image {
+            text-align: center;
+        }
+
+        .product .product-image img {
+            width: 100px;
+        }
+
+        .product .product-details .product-title {
+            margin-right: 20px;
+            font-family: var(--font-bold);
+        }
+
+        .product .product-details .product-description {
+            margin: 5px 20px 5px 0;
+            line-height: 1.4em;
+        }
+
+        .product .product-quantity input {
+            width: 40px;
+        }
+
+        .product .remove-product {
+            border: 0;
+            padding: 4px 8px;
+            background-color: #c66;
+            color: #fff;
+            font-family: var(--font-bold);
+            font-size: 12px;
+            border-radius: 3px;
+        }
+
+        .product .remove-product:hover {
+            background-color: #a44;
+        }
+
+        /* Totals section */
+        .totals .totals-item {
+            float: right;
+            clear: both;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .totals .totals-item label {
+            float: left;
+            clear: both;
+            width: 79%;
+            text-align: right;
+        }
+
+        .totals .totals-item .totals-value {
+            float: right;
+            width: 21%;
+            text-align: right;
+        }
+
+        .totals .totals-item-total {
+            font-family: var(--font-bold);
+        }
+
+        .checkout {
+            float: right;
+            border: 0;
+            margin-top: 20px;
+            padding: 6px 25px;
+            background-color: #6b6;
+            color: #fff;
+            font-size: 25px;
+            border-radius: 3px;
+        }
+
+        .checkout:hover {
+            background-color: #494;
+        }
+
+        /* Make adjustments for tablet */
+        @media screen and (max-width: 650px) {
+            .shopping-cart {
+                margin: 0;
+                padding-top: 20px;
+                border-top: 1px solid var(--color-border);
+            }
+
+            .column-labels {
+                display: none;
+            }
+
+            .product .product-image {
+                float: right;
+                width: auto;
+            }
+
+            .product .product-image img {
+                margin: 0 0 10px 10px;
+            }
+
+            .product .product-details {
+                float: none;
+                margin-bottom: 10px;
+                width: auto;
+            }
+
+            .product .product-price {
+                clear: both;
+                width: 70px;
+            }
+
+            .product .product-quantity {
+                width: 100px;
+            }
+
+            .product .product-quantity input {
+                margin-left: 20px;
+            }
+
+            .product .product-quantity:before {
+                content: 'x';
+            }
+
+            .product .product-removal {
+                width: auto;
+            }
+
+            .product .product-line-price {
+                float: right;
+                width: 70px;
+            }
+        }
+
+        /* Make more adjustments for phone */
+        @media screen and (max-width: 350px) {
+            .product .product-removal {
+                float: right;
+            }
+
+            .product .product-line-price {
+                float: right;
+                clear: left;
+                width: auto;
+                margin-top: 10px;
+            }
+
+            .product .product-line-price:before {
+                content: 'Item Total: $';
+            }
+
+            .totals .totals-item label {
+                width: 60%;
+            }
+
+            .totals .totals-item .totals-value {
+                width: 40%;
+            }
+        }
+
+        /* ////////////////////////////////////////   footer       ///////////////////////////////////// */
+
+
+
+
+        .footer {
+            background-color: #333;
+            /* Set background color */
+            color: #fff;
+            /* Set text color */
+            padding: 50px 0;
+            /* Add padding */
+        }
+
+        .footer .containerr {
+            width: 90%;
+            /* Set container width */
+            margin: 0 auto;
+            /* Center the container */
+        }
+
+        .footer .row {
+            display: flex;
+            /* Use flexbox for the row */
+            flex-wrap: wrap;
+            /* Allow wrapping on smaller screens */
+            justify-content: space-between;
+            /* Space evenly between columns */
+        }
+
+        .footer .col-md-4 {
+            flex: 0 0 calc(33.333% - 20px);
+            /* Set column width */
+            max-width: calc(33.333% - 20px);
+            /* Set max-width */
+            margin-bottom: 20px;
+            /* Add margin between columns */
+        }
+
+        .footer h5 {
+            color: #fff;
+            /* Set heading color */
+        }
+
+        .footer p {
+            margin: 10px 0;
+            /* Add margin to paragraphs */
+        }
+
+        .footer .social-icons li {
+            display: inline-block;
+            /* Display social icons horizontally */
+            margin-right: 10px;
+            /* Add margin between icons */
+        }
+
+        .footer .social-icons li a {
+            color: #fff;
+            /* Set icon color */
+            font-size: 20px;
+            /* Set icon size */
+        }
+
+        .footer .quick-links li {
+            display: block;
+            margin-bottom: 10px;
+            /* Add margin between quick links */
+        }
+
+        .footer .quick-links li a {
+            color: #fff;
+            /* Set link color */
+            text-decoration: none;
+            /* Remove underline */
+        }
+
+        .footer .quick-links li a:hover {
+            text-decoration: underline;
+            /* Add underline on hover */
+        }
+
+        .imgSecond {
+            display: flex;
+            width: 35%;
+
+         
+        }
+    </style>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/"><img src="/img/Screenshot 2024-04-13 105644.png" alt="Logo"></a>
+        </div>
+        <div class="nav-options">
+            <div class="dropdown">
+                <div class="dropdown-content">
+                    <% newcategory.forEach((categories, index)=> { %>
+                        <a href="/sunglass">
+                            <%= categories.categoryName %>
+                        </a>
+                        <% }); %>
+                </div>
+            </div>
+        </div>
+        <div class="nav-icons">
+            <ul>
+                <form action="#" class="search-bar">
+                    <input type="text" placeholder="Search...">
+                    <button type="submit"><box-icon name='search'><i class='bx bx-search'></i></box-icon></button>
+                </form>
+                <% if (loggedIn) { %>
+                    <form action="/logout" method="post">
+                        <button type="submit">Logout</button>
+                    </form>
+                    <% } else { %>
+                        <form action="/logout" method="post">
+                            <button type="submit">Login</button>
+                        </form>
+                        <% } %>
+                            <form action="/cart" method="get">
+                                <button type="submit"><i class="bi bi-cart-fill" style="color: white;"></i></button>
+                            </form>
+                            <li><a href="/profile"><i class="bi bi-person-circle" style="color: white;"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+
+</head>
+
+<body>
+    <h1>Shopping Cart</h1>
+    <% if (cart && cart.items.length> 0) { %>
+            <div class="shopping-cart">
+                <div class="column-labels">
+                    <label class="product-image">Image</label>
+                    <label class="product-details">Product</label>
+                    <label class="product-price">Price</label>
+                    <label class="product-quantity">Quantity</label>
+                    <label class="product-removal">Remove</label>
+                    <label class="product-line-price">Total</label>
+                </div>
+
+
+        <% cart.items.forEach(item=> { %>
+                <div class="product">
+                    <div class="product-image">
+                        <img src="<%= item.productId.productImages[0] %>" alt="<%= item.productId.name %>">
+                    </div>
+                    <div class="product-details">
+                        <div class="product-title">
+                            <%= item.productId.name %>
+                        </div>
+                        <p class="product-description">
+                            <%= item.productId.description %>
+                        </p>
+                    </div>
+                    <div class="product-price">
+                        <%= item.productId.price.toFixed(2) %>
+                    </div>
+                    <div class="product-quantity">
+                        <div class="quantity-input">
+                            <button class="quantity-btn minus-btn" type="button" style="">-</button>
+                            <input type="number" value="<%= item.quantity %>" min="1" max="3"
+                                data-price="<%= item.productId.price %>" data-productid="<%= item.productId._id %>"
+                                class="quantity-field">
+                            <button class="quantity-btn plus-btn" type="button">+</button>
+                        </div>
+                    </div>
+
+                    <div class="product-removal">
+                        <button class="remove-product" data-productid="<%= item.productId._id %>">Remove</button>
+                    </div>
+                    <div class="product-line-price">
+                        <%= (item.productId.price * item.quantity).toFixed(2) %>
+                    </div>
+                </div>
+                <% }); %>
+
+                    <div class="totals">
+                        <div class="totals-item">
+                            <label>Subtotal</label>
+                            <div class="totals-value" id="cart-subtotal">
+                                <%= cart.items.reduce((total, item)=> total + item.productId.price * item.quantity,
+                                    0).toFixed(2) %>
+                            </div>
+                        </div>
+                        <div class="totals-item">
+                            <label>Shipping</label>
+                            <div class="totals-value" id="cart-shipping">15.00</div>
+                        </div>
+                        <div class="totals-item totals-item-total">
+                            <label>Grand Total</label>
+                            <div class="totals-value" id="cart-total">
+                                <%= (cart.items.reduce((total, item)=> total + item.productId.price * item.quantity, 0)
+                                    + 15.00).toFixed(2) %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="/checkout"><button class="checkout">Checkout</button></a>
+                    <% } else { %>
+<div id="emptycart">
+                 <h1 class="empty" style="text-align: center;">Your cart is empty.</h1> 
+</div>
+          
+                        <% } %>
+            </div>
+
+
+            <footer class="footer">
+                <div class="containerr">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Contact Us</h5>
+                            <p>Email: info@example.com</p>
+                            <p>Phone: +123456789</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Follow Us</h5>
+                            <ul class="social-icons">
+                                <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Quick Links</h5>
+                            <ul class="quick-links">
+                                <li><a href="#">Home</a></li>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Services</a></li>
+                                <li><a href="#">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const quantityFields = document.querySelectorAll('.quantity-field');
+                    const cartSubtotal = document.getElementById('cart-subtotal');
+                    const cartTotal = document.getElementById('cart-total');
+                    const shippingCost = 15.00;
+
+                    function updateCartTotals() {
+                        let subtotal = 0;
+                        quantityFields.forEach(field => {
+                            const price = parseFloat(field.dataset.price);
+                            const quantity = parseInt(field.value);
+                            const linePrice = price * quantity;
+                            subtotal += linePrice;
+                            field.closest('.product').querySelector('.product-line-price').textContent = linePrice.toFixed(2);
+                        });
+                        cartSubtotal.textContent = subtotal.toFixed(2);
+                        cartTotal.textContent = (subtotal + shippingCost).toFixed(2);
+                    }
+
+                    function updateQuantity(input, productId, newQuantity) {
+                        fetch(`updateQuantity/${productId}`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ quantity: newQuantity })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    input.value = newQuantity;
+                                    updateCartTotals();
+                                } else {
+                                    console.log("Error updating quantity");
+                                }
+                            })
+                            .catch(err => console.log(err));
+                    }
+
+                    quantityFields.forEach(field => {
+                        const productId = field.dataset.productid;
+
+                        field.addEventListener('change', function (e) {
+                            const newQuantity = parseInt(e.target.value);
+                            if (newQuantity < 1) {
+                                e.target.value = 1;
+                                updateQuantity(e.target, productId, 1);
+                            } else if (newQuantity > 3) {
+                                e.target.value = 3;
+                                updateQuantity(e.target, productId, 3);
+                            } else {
+                                updateQuantity(e.target, productId, newQuantity);
+                            }
+                        });
+
+                        const minusBtn = field.parentNode.querySelector('.minus-btn');
+                        const plusBtn = field.parentNode.querySelector('.plus-btn');
+
+                        minusBtn.addEventListener('click', function () {
+                            const currentQuantity = parseInt(field.value);
+                            if (currentQuantity > 1) {
+                                const newQuantity = currentQuantity - 1;
+                                field.value = newQuantity;
+                                updateQuantity(field, productId, newQuantity);
+                            }
+                        });
+
+                        plusBtn.addEventListener('click', function () {
+                            const currentQuantity = parseInt(field.value);
+                            if (currentQuantity < 3) {
+                                const newQuantity = currentQuantity + 1;
+                                field.value = newQuantity;
+                                updateQuantity(field, productId, newQuantity);
+                            }
+                        });
+                    });
+
+                    updateCartTotals();
+                });
+
+            </script>
+            <script>
+                document.querySelectorAll('.remove-product').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const productId = this.dataset.productid;
+                        console.log(productId)
+                        fetch(`/cartRemove/${productId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(response => {
+                            if (response.ok) {
+                                this.closest('.product').remove();
+                                updateTotals();
+                            } else {
+                                console.error('Failed to remove product');
+                            }
+                        }).catch(error => {
+                            console.error('Error:', error);
+                        });
+                    });
+                });
+
+                function updateTotals() {
+                    let subtotal = 0;
+                    document.querySelectorAll('.product-line-price').forEach(priceElement => {
+                        subtotal += parseFloat(priceElement.textContent);
+                    });
+                    document.getElementById('cart-subtotal').textContent = subtotal.toFixed(2);
+                    const shipping = 15.00;
+                    const total = subtotal + shipping;
+                    document.getElementById('cart-total').textContent = total.toFixed(2);
+                }
+
+            </script>
+</body>
+
+</html>

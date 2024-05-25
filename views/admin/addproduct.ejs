@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="/asset/admin/addproduct.css">
+    <link  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+
+
+    <style>
+        .preview-item {
+    margin-bottom: 10px;
+}
+
+.preview-image {
+    max-width: 100px; /* Set the maximum width of the preview image */
+    max-height: 100px; /* Set the maximum height of the preview image */
+    display: block;
+    margin-bottom: 5px;
+}
+
+
+/* crop */
+#cropModal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Ensure modal is on top */
+    }
+    .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 600px;
+        max-height: 80%;
+        overflow-y: auto;
+        position: relative;
+    }
+    #closeModal {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    #cropImage {
+        max-width: 100%;
+        max-height: 60vh;
+    }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Add Product</h1>
+    <a href="javascript:history.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </a>
+      
+    <form action="/admin/add-product" method="POST" enctype="multipart/form-data">
+        <% if(errorMessage){ %>
+            <p style="color: red;"><%= errorMessage %></p>
+        <% } %>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required pattern="[A-Za-z0-9\s]+"><br>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" required pattern="[A-Za-z0-9\s]+"><br>
+
+        <label for="category">Category:</label>
+        
+        <select id="category" name="categoryName" required style=" color: #fff; padding: 10px;  margin-top: 5px;  border: none; border-radius: 5px;  background-color: #555;">
+            <!-- Iterate over existing categories and populate options -->
+            <% existingCategories.forEach(category => { %>
+                <option value="<%= category.categoryName %>"><%= category.categoryName %></option>
+            <% }) %>
+        </select><br>
+
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" name="stock" required min="0"><br>
+
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" required min="0" step="0.01"><br>
+
+        <label for="offerprice">Offer Price:</label>
+        <input type="number" id="offerprice" name="offerprice" required min="0" step="0.01"><br>
+
+        <div class="form-group">
+            <label for="product_image">Image</label>
+            <input type="file" class="form-control" id="product_image" placeholder="Select The Files" name="product_image" accept=".jpg, .png" multiple >
+        </div>
+        <!-- IMAGE  PREVIEW BEGIN -->
+        <div id="previewContainer" >
+          
+        </div>
+        <!-- IMAGE  PREVIEW END -->
+        
+    
+     
+
+        <button type="submit">Add Product</button>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+<!-- Crop Modal -->
+<div id="cropModal" style="display: none;">
+    <div class="modal-content">
+        <span id="closeModal">&times;</span>
+        <h2>Crop Image</h2>
+        
+        <div>
+            <img id="cropImage" src="" alt="Image to crop">
+        </div>
+        <button id="cropButton">Crop</button>
+    </div>
+</div>
+
+
+
+<script>
+    let cropper;
+    let currentPreviewElement;
+    let originalFiles = []; // Array to keep track of the original files
+
+    // Function to open the cropper modal and initialize cropper
+    function openCropper(src) {
+        const cropImage = document.getElementById('cropImage');
+        cropImage.src = src;
+        document.getElementById('cropModal').style.display = 'flex';
+
+        cropper = new Cropper(cropImage, {
+            aspectRatio: 1,
+            viewMode: 2,
+            autoCropArea: 1,
+        });
+    }
+
+    document.getElementById('previewContainer').addEventListener('click', function(event) {
+        if (event.target.tagName === 'IMG') {
+            currentPreviewElement = event.target;
+            const src = currentPreviewElement.src;
+            openCropper(src);
+        }
+    });
+
+    document.getElementById('cropButton').addEventListener('click', function() {
+        const canvas = cropper.getCroppedCanvas();
+        canvas.toBlob((blob) => {
+            const croppedFile = new File([blob], 'cropped_image.png', { type: 'image/png' });
+
+            // Find the index of the current preview element in the original files
+            const fileIndex = Array.from(document.querySelectorAll('.preview-image')).indexOf(currentPreviewElement);
+
+            if (fileIndex !== -1) {
+                // Replace the original file with the cropped file in the originalFiles array
+                originalFiles[fileIndex] = croppedFile;
+            }
+
+            // Update the preview image with the cropped image
+            currentPreviewElement.src = canvas.toDataURL();
+
+            cropper.destroy();
+            document.getElementById('cropModal').style.display = 'none';
+        });
+    });
+
+    document.getElementById('closeModal').addEventListener('click', function() {
+        cropper.destroy();
+        document.getElementById('cropModal').style.display = 'none';
+    });
+
+    document.getElementById('product_image').addEventListener('change', function(event) {
+        const files = event.target.files;
+        const previewContainer = document.getElementById('previewContainer');
+        previewContainer.innerHTML = '';
+        originalFiles = Array.from(files); // Store the original files
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewElement = document.createElement('div');
+                previewElement.classList.add('preview-item');
+                const imageElement = document.createElement('img');
+                imageElement.classList.add('preview-image');
+                imageElement.src = e.target.result;
+                previewElement.appendChild(imageElement);
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('delete-button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', function() {
+                    previewContainer.removeChild(previewElement);
+                    originalFiles.splice(i, 1); // Remove the deleted file from the originalFiles array
+
+                    // Update the file input with the remaining files
+                    const newFileList = new DataTransfer();
+                    originalFiles.forEach(f => newFileList.items.add(f));
+                    document.getElementById('product_image').files = newFileList.files;
+                });
+                previewElement.appendChild(deleteButton);
+                previewContainer.appendChild(previewElement);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Update the file input with the new file list before form submission
+    document.querySelector('form').addEventListener('submit', function() {
+        const newFileList = new DataTransfer();
+        originalFiles.forEach(f => newFileList.items.add(f));
+        document.getElementById('product_image').files = newFileList.files;
+    });
+</script>
+
+
+
+
+<script>
+
+    // Fetch categories and populate dropdown/select element
+    fetch('/categories')
+        .then(response => response.json())
+        .then(categories => {
+            const categorySelect = document.getElementById('category');
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.text = category;
+                categorySelect.add(option);
+            });
+        });
+
+    function validateForm() {
+        const name = document.getElementById('name').value.trim();
+        const stock = document.getElementById('stock').value;
+        const price = document.getElementById('price').value;
+
+        // Basic validation for name (only letters, numbers, and spaces allowed)
+        if (!/^[A-Za-z0-9\s]+$/.test(name)) {
+            alert('Name can only contain letters, numbers, and spaces.');
+            return false;
+        }
+
+        // Basic validation for stock (must be a positive integer)
+        if (stock < 0 || !Number.isInteger(+stock)) {
+            alert('Stock must be a positive integer.');
+            return false;
+        }
+
+        // Basic validation for price (must be a positive number with up to 2 decimal places)
+        if (price <= 0 || !/^\d+(\.\d{1,2})?$/.test(price)) {
+            alert('Price must be a positive number with up to 2 decimal places.');
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+</body>
+</html>

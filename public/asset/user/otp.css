@@ -1,0 +1,69 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-image: url("/img/dark theme backgroun.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+h1 {
+    margin: 0 0 20px;
+    font-size: 24px;
+    color: #000000;
+    text-align: center;
+}
+
+.userInput {
+    display: flex;
+    justify-content: center;
+}
+
+input[type="text"] {
+    margin: 0 5px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    background: #eef2f3;
+    font-size: 18px;
+}
+
+button {
+    margin-top: 25px;
+    width: 150px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    background: linear-gradient(to right, #9bc5c3, #616161);
+    color: #fff;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(to right, #6ab9b6, #4b4b4b);
+	
+}
+
+button:last-child {
+    margin-left: 10px;
+    background: #e74c3c;
+}
+
+
+#timerPlaceholder{
+    background-size: auto;
+   color: white;
+   text-align: center;
+}
