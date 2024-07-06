@@ -6,18 +6,15 @@
     <title>OTP Verification</title>
     <link rel="stylesheet" type="text/css" href="/asset/user/otp.css">
 </head>
-<style>
-
-</style>
-<body>zzzzz
-    <div class="container">
-        <% if(errorMessage){ %>
-            <p style="color: red;"><%= errorMessage %></p>
-        <% } %>
+<body>
+    
+    <div class="container" >
+      
         <form id="otpForm" action="/otp" method="post">
-            <h1>Enter OTP</h1>
-          
-
+            <h1 style="color: rgb(255, 255, 255);">Enter OTP</h1>
+            <% if(errorMessage){ %>
+                <p style="color: red;"><%= errorMessage %></p>
+            <% } %>
             <div class="userInput">
                 <input type="text" name="otp[]" maxlength="1" oninput="jumpToNext(this, 'otp2')">
                 <input type="text" name="otp[]" id="otp2" maxlength="1" oninput="jumpToNext(this, 'otp3')">
@@ -25,47 +22,41 @@
                 <input type="text" name="otp[]" id="otp4" maxlength="1" oninput="jumpToNext(this, 'otp5')">
                 <input type="text" name="otp[]" id="otp5" maxlength="1" oninput="jumpToNext(this, 'otp6')">
                 <input type="text" name="otp[]" id="otp6" maxlength="1" oninput="jumpToNext(this, null)">
-            </div> <br>          
-             <div id="timerPlaceholder">Time Left: <span id="timer" style="color:red;"></span> seconds</div>
-
-            <button type="submit">Confirm</button>
-            <p class="resend text-muted mb-0 ">
-                Didn't receive code? <a href="/otp" id="resendBtn" onclick="requestAgain()" class="hidden"> Request again</a>
-              </p>
-
+            </div>
+            <br>
+            <div id="timerPlaceholder">Time Left: <span id="timer" style="color:red;"></span> seconds</div>
+            <button type="submit" style="margin-left: 30%;">Confirm</button>
+            <p class="resend text-muted mb-0" style="text-align: center;">
+                Didn't receive code? <a href="#" id="resendBtn" onclick="resendOTP()" class="hidden" style="color: brown;"> Request again</a>
+            </p>
         </form>
     </div>
 
     <script>
         let timer;
         let timeLeft = 60;
-        // Check if there's stored timeLeft in localStorage
-        
 
-        if(localStorage.getItem('otpTimeLeft')){
+        if (localStorage.getItem('otpTimeLeft')) {
             timeLeft = parseInt(localStorage.getItem('otpTimeLeft'));
-            if(timeLeft <= 0) {
-                // If the timer has expired, show the Resend OTP button
+            if (timeLeft <= 0) {
                 document.getElementById("timerPlaceholder").style.display = "none";
-                document.getElementById("resendButton").style.display = "inline-block";
+                document.getElementById("resendBtn").style.display = "inline-block";
             } else {
-                // If the timer is still running, start the timer
                 startTimer();
             }
-        }else{
-            startTimer()
+        } else {
+            startTimer();
         }
 
         function startTimer() {
             timer = setInterval(() => {
                 document.getElementById("timer").innerText = timeLeft;
                 timeLeft--;
-                // Store the timeLeft in localStorage
                 localStorage.setItem('otpTimeLeft', timeLeft.toString());
                 if (timeLeft < 0) {
                     clearInterval(timer);
                     document.getElementById("timerPlaceholder").style.display = "none";
-                    document.getElementById("resendButton").style.display = "inline-block";
+                    document.getElementById("resendBtn").style.display = "inline-block";
                 }
             }, 1000);
         }
@@ -76,19 +67,30 @@
             }
         }
 
-        function resendOTP() {
-            alert("OTP Resent!");
-            timeLeft = 60;
-            document.getElementById("timerPlaceholder").style.display = "block";
-            document.getElementById("resendButton").style.display = "none";
-            // Remove stored timeLeft when OTP is resent
-            localStorage.removeItem('otpTimeLeft');
-            startTimer();
+        async function resendOTP() {
+            try {
+                const response = await fetch('/resendotp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    alert("OTP Resent!");
+                    timeLeft = 60;
+                    document.getElementById("timerPlaceholder").style.display = "block";
+                    document.getElementById("resendBtn").style.display = "none";
+                    localStorage.removeItem('otpTimeLeft');
+                    startTimer();
+                } else {
+                    alert("Failed to resend OTP.");
+                }
+            } catch (error) {
+                console.error("Error resending OTP:", error);
+                alert("An error occurred. Please try again.");
+            }
         }
-
     </script>
-
-    
 </body>
 </html>
- 

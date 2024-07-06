@@ -395,7 +395,7 @@
                                         <h6>Coupon Code: <%= coupon.code %></h6>
                                         <p>Discount: <%= coupon.discountValue %> %</p>
                                         <p>Expiry Date: <%= coupon.expirationDate.toISOString().split('T')[0] %></p>
-                                        <button  onclick="copyCoupon('<%= coupon.code %>')">Copy Coupon Code</button>
+                                    
                                         <!-- Add more details as needed -->
                                     </div>
                                 <% }); %>
@@ -420,18 +420,7 @@
     <script src="/scripts.js"></script>
 
 
-    <script>
-        function copyCoupon(code) {
-            // Function to copy the coupon code to clipboard
-            navigator.clipboard.writeText(code)
-                .then(() => {
-                    console.log("copyed");
-                })
-                .catch(err => {
-                    console.error('Failed to copy coupon code: ', err);
-                });
-        }
-    </script>
+
  
 </body>
 

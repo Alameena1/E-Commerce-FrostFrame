@@ -345,32 +345,33 @@
                     <div class="card mt-3">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                              <a href="/profile" style="color: black;">Personal Information</a>
+                                <a href="/profile" style="color: black;"> <h6>Personal Information</h6> </a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                               
-                                <a href="/address" style="color: black;"><h6>Manage Addresses</h6></a>
+
+                                <a href="/address" style="color: black;">
+                                    <h6>Manage Addresses</h6>
+                                </a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <a href="/order" style="color: black;">My Order</a>
+                                <a href="/order" style="color: black;"><h6>My Orders</h6> </a>
+                                
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                                 <% if (!user.googleid) { %>
-                                    <a href="/changepassword" style="color: black;">Change Password</a>
-                                <% } %>
-                            </li>
-                            
-                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <a href="/wallet" style="color: black;">Wallet</a>
-                    
+                                    <a href="/changepassword" style="color: black;"><h6>Change Password</h6></a>
+                                    <% } %>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <a href="/coupon" style="color: black;">Coupon</a>
+                                <a href="/wallet" style="color: black;"><h6>Wallet</h6> </a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <a href="/coupon" style="color: black;"><h6>Coupon</h6> </a>
+                               
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <a href="/wishlist" style="color: black;"><h6>Wish List</h6> </a>
                               
-                                <a href="/wishlist" style="color: black;">whishlist</a>
-                                
                             </li>
                         </ul>
                     </div>

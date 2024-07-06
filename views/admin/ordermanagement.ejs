@@ -180,8 +180,9 @@
                             <td><%= item.productName %></td>
                             <td><%= order.address.address %>, <%= order.address.city %>, <%= order.address.state %></td>
                             <td>
-                                <% if (item.status !== 'Cancelled' && item.status !== 'Delivered') { %>
+                                <% if (item.status !== 'Cancelled' && item.status !== 'Delivered' && item.status !== 'Returned') { %>
                                     <form action="/admin/change-status/<%= order._id %>" method="POST">
+                                        <input type="hidden" name="productId" value="<%= item.productId %>">
                                         <select name="status" class="dropdown" onchange="this.form.submit()">
                                             <option value="Pending" <%= item.status === 'Pending' ? 'selected' : '' %>>Pending</option>
                                             <option value="Shipped" <%= item.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
@@ -190,9 +191,12 @@
                                     </form>
                                 <% } else if (item.status === 'Delivered') { %>
                                     <p style="color: rgb(28, 232, 28);">Delivered</p>
+                                <% } else if (item.status === 'Returned') { %>
+                                    <p style="color: rgb(0, 247, 255);">Returned</p>
                                 <% } else { %>
                                     <p style="color: red;"><%= item.status %></p>
                                 <% } %>
+                                
                             </td>
                             
                             
@@ -207,6 +211,13 @@
             </table>
             
         </div>
+
+        <div class="pagination">
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <a href="/admin/order?page=<%= i %>" class="<%= currentPage === i ? 'active' : '' %>"><%= i %></a>
+                <% } %>
+        </div>
+
     </div>
 
    

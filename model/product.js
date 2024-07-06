@@ -7,13 +7,10 @@ const productschema = new mongoose.Schema({
     },
     description: {
         type: String,
-        
-      },
-
+    },
     category: {
-      type: String,
-      
-    }, 
+        type: String,
+    },
     productImages: {
         type: [String]
     },
@@ -25,15 +22,15 @@ const productschema = new mongoose.Schema({
     },
     offerprice: {
         type: Number,
-       
-      },
-      isBlocked: {
+    },
+    isBlocked: {
         type: Boolean,
         default: false
     }
+},
+ { timestamps: true }
+); // This adds createdAt and updatedAt fields
 
-    
-});
 
 const productcollection = mongoose.model('product', productschema);
 module.exports = productcollection;

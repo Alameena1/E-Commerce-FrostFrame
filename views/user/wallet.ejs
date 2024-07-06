@@ -345,7 +345,7 @@
                     <div class="card mt-3">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <a href="/profile" style="color: black;"> Personal Information </a>
+                                <a href="/profile" style="color: black;"> <h6>Personal Information</h6> </a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 
@@ -354,21 +354,24 @@
                                 </a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <h6>My Orders</h6>
+                                <a href="/order" style="color: black;"><h6>My Orders</h6> </a>
+                                
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                                 <% if (!user.googleid) { %>
-                                    <a href="/changepassword" style="color: black;">Change Password</a>
+                                    <a href="/changepassword" style="color: black;"><h6>Change Password</h6></a>
                                     <% } %>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <h6 style="cursor: pointer;">Wallet</h6>
+                                <a href="/wallet" style="color: black;"><h6>Wallet</h6> </a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <h6 style="cursor: pointer;">Coupon</h6>
+                                <a href="/coupon" style="color: black;"><h6>Coupon</h6> </a>
+                               
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <h6 style="cursor: pointer;">Wish List</h6>
+                                <a href="/wishlist" style="color: black;"><h6>Wish List</h6> </a>
+                              
                             </li>
                         </ul>
                     </div>
@@ -382,9 +385,37 @@
                 <div id="wallet" class="card mb-3 info-section" style="width: 60%;">
                     <div class="card-body">
                         <h6 class="mb-3">MY WALLET</h6>
-                        <h2>MY WALLET BALANCE: <%= (user.wallet !== undefined && user.wallet !== null) ? user.wallet : 0 %></h2>
+                        <h2>MY WALLET BALANCE: ₹<%= (user.wallet !== undefined && user.wallet !== null) ? user.wallet.balance.toFixed(2) : '0.00' %></h2><br>
+                        
+                        <h4>Transaction History</h4>
+                        <div class="transaction-history">
+                            <% if (user.wallet.transactions && user.wallet.transactions.length > 0) { %>
+                                <% user.wallet.transactions.forEach(transaction => { %>
+                                    <div class="transaction-item card p-3 mb-3 shadow-sm">
+                                        <div class="row align-items-center">
+                                            <div class="col-sm-8 text-secondary">
+                                                <p class="mb-1"><strong>Amount:</strong> ₹<%= transaction.amount.toFixed(2) %></p>
+                                                <p class="mb-1"><strong>Description:</strong> <%= transaction.description %></p>
+                                                <p class="mb-1"><strong>Date:</strong> <%= new Date(transaction.date).toLocaleString() %></p>
+                                            </div>
+                                            <div class="col-sm-4 text-right">
+                                                <% if (transaction.amount > 0) { %>
+                                                    <span class="badge badge-success">Credit</span>
+                                                <% } else { %>
+                                                    <span class="badge badge-danger">Debit</span>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <p>No transactions found.</p>
+                            <% } %>
+                        </div>
+                        <hr>
                     </div>
                 </div>
+                
                 
             </div>
         </div>

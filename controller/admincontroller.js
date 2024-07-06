@@ -2,9 +2,10 @@ const express = require("express")
 const multer = require('multer');
 const router = express.Router()
 const PDFDocument = require('pdfkit');
+const PDFTable = require('pdfkit-table');
 const ExcelJS = require('exceljs');
 const moment = require("moment-timezone")
-const { table } = require('pdfkit-table');
+
 const collection = require('../model/user')
 const category = require("../model/category")
 const product = require("../model/product")
@@ -54,9 +55,76 @@ const postlogin = async (req, res) => {
 }
 
 
-const getdashbord = (req, res) => {
+const getdashbord = async (req, res) => {
 
-    res.render('admin/dashbord')
+    try {
+        // Fetch orders from the database
+        const orders = await Order.find();
+
+        // Process data for the charts
+        const salesData = {
+            labels: moment.months(), // ['January', 'February', 'March', ...]
+            data: Array(12).fill(0)
+        };
+
+        const productsData = {};
+        const categoriesData = {};
+
+        for (const order of orders) {
+            const orderMonth = moment(order.orderDate).month();
+            salesData.data[orderMonth] += order.totalPrice;
+
+            // Process each item in the order
+            for (const item of order.items) {
+                try {
+                    // Find the product using productId to get categoryName
+                    const Product = await product.findById(item.productId);
+                    if (Product) {
+                        // Process products data
+                        if (!productsData[item.productName]) {
+                            productsData[item.productName] = 0;
+                        }
+                        productsData[item.productName] += item.quantity;
+
+                        // Process categories data
+                        const category = Product.category;
+                        if (!categoriesData[category]) {
+                            categoriesData[category] = 0;
+                        }
+                        categoriesData[category] += item.quantity;
+                    } else {
+                        console.log(`Product with ID ${item.productId} not found.`);
+                    }
+                } catch (error) {
+                    console.error(`Error fetching product with ID ${item.productId}: ${error.message}`);
+                }
+            }
+        }
+        const productsChartData = {
+            labels: Object.keys(productsData),
+            data: Object.values(productsData)
+        };
+        console.log("productsChartData",productsChartData);
+    
+
+
+        const categoriesChartData = {
+            labels: Object.keys(categoriesData),
+            data: Object.values(categoriesData)
+        };
+
+        console.log("categoriesChartData",categoriesChartData);
+
+        // Send data to the EJS template
+        res.render('admin/dashbord', {
+            salesData,
+            productsChartData,
+            categoriesChartData
+        });
+    }  catch (error) {
+        console.error('Error fetching orders:', error);
+        res.status(500).send('Internal Server Error');
+   }
 
 }
 
@@ -72,7 +140,7 @@ const getusermanagement = async (req, res) => {
 
 
 
-        const userData = await collection.find().skip(skip).limit(perPage);
+        const userData = await collection.find().skip(skip).limit(perPage).sort({createdAt:-1});
         // console.log("userData is getting",userData);
         res.render('admin/usermanagement', { userData, totalPages, currentPage: parseInt(page) })
 
@@ -127,13 +195,13 @@ const postBlockUser = async (req, res) => {
 const getproductmanagement = async (req, res) => {
     try {
         const page = req.query.page || 1;
-        const perPage = 3; // Number of products per page
+        const perPage = 5; // Number of products per page
         const skip = (page - 1) * perPage;
 
         const totalCount = await product.countDocuments(); // Get total count of products
         const totalPages = Math.ceil(totalCount / perPage); // Calculate total pages
 
-        const newProducts = await product.find().skip(skip).limit(perPage);
+        const newProducts = await product.find().skip(skip).limit(perPage).sort({createdAt:-1});
         const existingCategories = await category.find();
 
         res.render('admin/productmanagement', { newProducts, existingCategories, totalPages, currentPage: parseInt(page) });
@@ -327,13 +395,13 @@ const getcategorymanagement = async (req, res) => {
 
     try {
         const page = req.query.page || 1;
-        const perPage = 4; // Number of products per page
+        const perPage = 5; // Number of products per page
         const skip = (page - 1) * perPage;
 
-        const totalCount = await product.countDocuments(); // Get total count of products
+        const totalCount = await category.countDocuments(); // Get total count of products
         const totalPages = Math.ceil(totalCount / perPage); // Calculate total pages
 
-        const existingCategories = await category.find().skip(skip).limit(perPage);
+        const existingCategories = await category.find().skip(skip).limit(perPage).sort({createdAt:-1});
 
 
 
@@ -507,34 +575,33 @@ const logout = (req, res) => {
 
 const getorder = async (req, res) => {
     try {
-        const page = req.query.page || 1;
-        const perPage = 3; // Number of products per page
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 6; // Number of products per page
         const skip = (page - 1) * perPage;
 
-        const totalCount = await product.countDocuments(); // Get total count of products
+        const totalCount = await Order.countDocuments(); // Get total count of orders
         const totalPages = Math.ceil(totalCount / perPage); // Calculate total pages
 
+        const orders = await Order.find().populate('userId').sort({ createdAt: -1 }).skip(skip).limit(perPage).exec();
 
-        const orders = await Order.find().populate('userId').sort({ createdAt: -1 }).exec();
-        res.render('admin/ordermanagement', { totalPages, orders, currentPage: parseInt(page) });
+        res.render('admin/ordermanagement', { totalPages, orders, currentPage: page });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).send("Internal Server Error");
-
-
     }
-}
+};
+
 
 
 
 const changestatus = async (req, res) => {
     const { orderId } = req.params;
-    const { status } = req.body;
+    const { productId, status } = req.body;
 
     try {
         await Order.updateOne(
-            { _id: orderId, 'items.0': { $exists: true } }, // Assuming you are updating the status of the first item
-            { $set: { 'items.0.status': status } }
+            { _id: orderId, 'items.productId': productId }, // Ensure the order contains the specified product
+            { $set: { 'items.$.status': status } } // Update the status of the specific product
         );
         res.redirect('/admin/order');
     } catch (error) {
@@ -543,14 +610,15 @@ const changestatus = async (req, res) => {
     }
 };
 
+
 const getsalesreport = async (req, res) => {
     try {
-        const page = req.query.page || 1;
-        const perPage = 3; // Number of orders per page
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 10; // Number of orders per page
         const skip = (page - 1) * perPage;
         let { startDate, endDate, filterOption } = req.query;
         let ordersQuery = {};
-        let sum = 0;
+
         if (startDate && endDate) {
             ordersQuery.orderDate = {
                 $gte: new Date(startDate),
@@ -578,50 +646,51 @@ const getsalesreport = async (req, res) => {
             };
         }
 
-        // Fetch orders with pagination, filter by status "delivered", and populate userId field
-        const orders = await Order.find(ordersQuery) // Assuming the status is stored within the items array
+        const orders = await Order.find(ordersQuery)
             .populate('userId')
             .skip(skip)
             .limit(perPage)
-            .sort({ createdAt: -1 }); // Sort by createdAt field in descending order
+            .sort({ createdAt: -1 });
 
-            const orderss = await Order.aggregate( [{ $match: { "items.status": "Delivered" } }]);
-            console.log("orderss", orderss);
-            
-
-        // Calculate total sales count and total order amount
-        const totalSalesCount = await Order.countDocuments({ "items.status": "Delivered" });
+        const totalSalesCount = await Order.countDocuments(ordersQuery);
         const totalOrderAmount = await Order.aggregate([
-            { $match: { "items.status": "Delivered" } },
+            { $match: ordersQuery },
             { $group: { _id: null, total: { $sum: "$totalPrice" } } }
         ]);
         const totalAmount = totalOrderAmount[0] ? totalOrderAmount[0].total : 0;
 
-        // Get the unique user count who have delivered orders
-        const userCount = await Order.aggregate([
-            { $match: { "items.status": "Delivered" } },
+        const userCountResult = await Order.aggregate([
+        
             { $group: { _id: "$userId" } },
             { $count: "userCount" }
         ]);
+        const userCount = userCountResult[0] ? userCountResult[0].userCount : 0;
 
-        // Render the sales report view with data
+        const totalPages = Math.ceil(totalSalesCount / perPage);
+
         res.render('admin/salesreport', {
-            orderss,
             orders,
             totalSalesCount,
             totalOrderAmount: totalAmount,
             userCount,
-            currentPage: parseInt(page), startDate, endDate, filterOption
+            currentPage: page,
+            totalPages,
+            startDate,
+            endDate,
+            filterOption
         });
 
     } catch (error) {
         console.log(error);
         res.status(500).send('Internal Server Error');
     }
-}
+};
+
 
 const getsalesPdf = async (req, res) => {
-    try {
+     try {
+        console.log("Generating Sales PDF Report...");
+
         let { startDate, endDate, filterOption } = req.query;
         let ordersQuery = {};
 
@@ -631,7 +700,7 @@ const getsalesPdf = async (req, res) => {
                 $lte: new Date(endDate)
             };
         } else if (filterOption) {
-            const today = moment().tz('YOUR_TIMEZONE').startOf('day');
+            const today = moment().tz('Asia/Kolkata').startOf('day');
             switch (filterOption) {
                 case 'daily':
                     startDate = today;
@@ -655,6 +724,7 @@ const getsalesPdf = async (req, res) => {
         const orders = await Order.find(ordersQuery).populate('userId').sort({ createdAt: -1 });
 
         const doc = new PDFDocument({ margin: 30 });
+
         let filename = `Sales_Report_${new Date().toISOString()}.pdf`;
         res.setHeader('Content-disposition', `attachment; filename=${filename}`);
         res.setHeader('Content-type', 'application/pdf');
@@ -664,37 +734,30 @@ const getsalesPdf = async (req, res) => {
         doc.moveDown();
 
         // Table Header
-        const headers = ['Order Date', 'Order ID', 'User Name', 'Product Name', 'Address', 'Discount Price', 'Total Price', 'Quantity', 'Payment Method'];
-        const columnWidths = [100, 100, 100, 150, 150, 100, 100, 70, 100];
-
-        // Draw table header
-        doc.fontSize(12).font('Helvetica-Bold');
-        headers.forEach((header, i) => {
-            doc.text(header, doc.x + 30, doc.y, { width: columnWidths[i], align: 'center' });
+        const tableHeaders = ['Order Date', 'Order ID', 'User Name', 'Product Name', 'Address', 'Discount Price', 'Total Price', 'Quantity', 'Payment Method'];
+        doc.fontSize(12);
+        tableHeaders.forEach(header => {
+            doc.text(header, { continued: true, underline: true, width: 100, align: 'left' });
+            doc.text(' ', { continued: true });
         });
         doc.moveDown();
 
-        // Draw table rows
-        doc.fontSize(10).font('Helvetica');
+        // Table Rows
         orders.forEach(order => {
-            const productNames = order.items.map(item => item.productName).join(', ');
-            const discountPrices = order.items.map(item => item.discountPrice).join(', ');
+            const orderDate = order.createdAt.toDateString();
+            const orderId = order._id.toString();
+            const userName = order.userId.name;
+            const productName = order.items.map(item => item.productName).join(', ');
             const address = `${order.address.address}, ${order.address.city}, ${order.address.state}, ${order.address.pincode}`;
+            const discountPrice = order.items.map(item => item.discountPrice).join(', ');
+            const totalPrice = `₹${order.totalPrice}`;
+            const quantity = order.totalQuantity.toString();
+            const paymentMethod = order.paymentMethod;
 
-            const row = [
-                order.createdAt.toDateString(),
-                order._id.toString(),
-                order.userId.name,
-                productNames,
-                address,
-                discountPrices,
-                `₹${order.totalPrice}`,
-                order.totalQuantity.toString(),
-                order.paymentMethod
-            ];
-
-            row.forEach((cell, i) => {
-                doc.text(cell, doc.x + 30, doc.y, { width: columnWidths[i], align: 'center' });
+            const row = [orderDate, orderId, userName, productName, address, discountPrice, totalPrice, quantity, paymentMethod];
+            row.forEach(cell => {
+                doc.text(cell, { continued: true, width: 100, align: 'left' });
+                doc.text(' ', { continued: true });
             });
             doc.moveDown();
         });
@@ -786,25 +849,27 @@ const getsalesExcel = async (req, res) => {
 };
 
 
-const getcouponmanagement = async (req,res) => {
-     try {
-        const page = req.query.page || 1;
+const getcouponmanagement = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
         const perPage = 3; // Number of products per page
         const skip = (page - 1) * perPage;
-
-        const totalCount = await product.countDocuments(); // Get total count of products
+    
+        const totalCount = await Coupon.countDocuments(); // Get total count of coupons
         const totalPages = Math.ceil(totalCount / perPage); // Calculate total pages
-        const coupons = await Coupon.find()
-        const existingCategories = await category.find();
-
-
-        res.render('admin/couponmanagement', {  coupons,existingCategories, totalPages, currentPage: parseInt(page) });
-     } catch (error) {
-        console.log(error);
-        res.status(500).send('Internal Server Error');
-        
-     }
-}
+        const coupons = await Coupon.find().skip(skip).limit(perPage).sort({ createdAt: -1 }); // Fetch paginated coupons
+    
+        res.render('admin/couponmanagement', {
+          coupons,
+          totalPages,
+          currentPage: page
+        });
+      }catch (error) {
+      console.log(error);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+  
 
 
 
@@ -915,6 +980,8 @@ const deleteCoupon = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+
 
 
 module.exports = {

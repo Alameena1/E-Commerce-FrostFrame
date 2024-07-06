@@ -162,14 +162,17 @@
         <div class="product-imgs">
             <div class="img-display">
                 <div class="img-showcase">
-                    <% products.productImages.forEach(image=> { %>
-                        <img src="<%= image %>" alt="Product Image" />
-                        <% }) %>
+                    <!-- Main image -->
+                    <% products.productImages.forEach((image, index) => { %>
+                        <img src="<%= image %>" alt="Product Image" id="mainImage" />
+                    <% }) %>
                 </div>
                 <div class="imgSecond">
-                    <% products.productImages.forEach(image=> { %>
-                        <img src="<%= image %>" alt="Product Image" />
-                        <% }) %>
+                    <!-- Secondary images -->
+                    <% products.productImages.forEach((image, index) => { %>
+                        <img src="<%= image %>" alt="Product Image"
+                            onclick="changeMainImage('<%= image %>')" />
+                    <% }) %>
                 </div>
             </div>
         </div>
@@ -301,6 +304,13 @@
         })
 
     </script>
+
+<script>
+    // Function to change main image when secondary image clicked
+    function changeMainImage(newImage) {
+        document.getElementById('mainImage').src = newImage;
+    }
+</script>
 
 </body>
 

@@ -28,6 +28,8 @@ router.get("/wishlist",usercontroller.getwishlist)
 router.get("/wallet",usercontroller.getwallet)
 router.get("/coupon",usercontroller.getcoupon)
 router.get("/validateCoupon/:id",usercontroller.getvalidateCoupon);
+router.get('/download-invoice/:orderId',usercontroller.getinvoice);
+
 
 
 
@@ -55,6 +57,8 @@ router.post("/changepassword",usercontroller.postchangepassword)
 router.post("/addtowishlist",usercontroller.postaddtowishlist)
 router.post("/razorpay",usercontroller.postrazorpay)
 router.post("/razorpay-success",usercontroller.postrazorpaysuccess)
+router.post("/razorpay-success",usercontroller.postrazorpaysuccess)
+router.post("/return-order",usercontroller.postreturn)
 
 
 

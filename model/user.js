@@ -1,53 +1,69 @@
-const mongoose =require("mongoose")
-const Schema =mongoose.Schema
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
 
 const userschema = new Schema({
-    name:{
-        type:String,
-        required:true
+    name: {
+        type: String,
+        required: true
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
-    password:{
-        type:String
+    password: {
+        type: String
 
     },
     isBlocked: {
         type: Boolean,
         default: false
     },
-    googleid:{
-        type:String
-        
+    googleid: {
+        type: String
+
     },
-    is_verified:{
-        type:b=Number,
-        default:0  
+    is_verified: {
+        type: Number,
+        default: 0
     },
-    referralCode:{
-        type:String
+    referralCode: {
+        type: String
     },
-    refferedCode:{
-        type:String
+    refferedCode: {
+        type: String
     },
-    token:{
-        type:String,
-        default:''
+    token: {
+        type: String,
+        default: ''
     },
-    phone:{
-        type:Number,
+    phone: {
+        type: Number,
     },
-    wallet:{
-        type:Number,
-        default:0
+    wallet: {
+        balance: {
+            type: Number,
+            default: 0
+        },
+        transactions: [{
+            amount: {
+                type: Number
+            },
+            description: {
+                type: String
+            },
+            date: {
+                type: Date,
+                default: Date.now
+            }
+        }]
     }
 
 
-})
+
+},
+{ timestamps: true })
 
 
-const user = mongoose.model('User',userschema);
+const user = mongoose.model('User', userschema);
 module.exports = user;

@@ -245,6 +245,9 @@
                                                     order.address.state %><br>
                                                     Phone number: <%= order.address.phoneNo %>
                             </p>
+
+                            <button class="download-invoice" data-order-id="<%= order._id %>">Download Invoice</button>
+
                         </div>
                     </div>
                     <hr>
@@ -255,24 +258,20 @@
                                     <img src="<%= item.productImage[0] %>" alt="Product Image" class="img-fluid">
                                 </div>
                                 <div class="col-md-9">
-                                    <h4>
-                                        <%= item.productName %>
-                                    </h4>
-                                    <h6>
-                                        <%= item.productDescription %>
-                                    </h6>
-                                    <h5>Order ID: <%= order._id %>
-                                    </h5>
-                                    <p>Price: ₹<%= item.price %>
-                                    </p>
-                                      <p>Quantity: ₹<%= item.quantity %>
-                                    </p>
-                                    <p>Status: <%= item.status %>
-                                    </p>
+                                    <h4><%= item.productName %></h4>
+                                    <h6><%= item.productDescription %></h6>
+                                    <h5>Order ID: <%= order._id %></h5>
+                                    <p>Price: ₹<%= item.price %></p>
+                                    <p>Quantity: <%= item.quantity %></p>
+                                    <p>Status: <%= item.status %></p>
+                                    
                                     <% if (item.status !== 'Cancelled') { %>
                                         <div class="order-status">
                                             <% if (item.status === 'Delivered') { %>
                                                 <button class="return-order" data-order-id="<%= order._id %>" data-product-id="<%= item.productId %>">Return Item</button>
+                                                <!-- Download Invoice Button -->
+                                            <% } else if (item.status === 'Returned') { %>
+                                                <p style="color: rgb(46, 0, 251);">Item Returned</p>
                                             <% } else { %>
                                                 <button class="cancel-order" data-order-id="<%= order._id %>" data-product-id="<%= item.productId %>">Cancel Item</button>
                                             <% } %>
@@ -284,6 +283,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <hr>
                         <% }) %>
                             <div class="text-right">
@@ -348,6 +348,63 @@
 });
 
     </script>
+<script>
+    document.querySelectorAll('.download-invoice').forEach(function(element) {
+      element.addEventListener('click', function(event) {
+        event.preventDefault();
+        const orderId = event.target.getAttribute('data-order-id');
+        window.location.href = `/download-invoice/${orderId}`;
+      });
+    });
+  </script>
+  
+
+<!-- return -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.return-order').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const orderId = this.getAttribute('data-order-id');
+            const productId = this.getAttribute('data-product-id');
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to return this item?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, return it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/return-order`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ orderId, productId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Returned!', 'Your item has been returned.', 'success');
+                        } else {
+                            Swal.fire('Error!', 'Something went wrong.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+    });
+});
+</script>
+
+
+<!-- return -->
+
+
+
 
 </body>
 

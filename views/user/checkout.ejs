@@ -448,37 +448,37 @@
     <div class="container">
         <div class="accordion">
             <div class="accordion-item">
-                <button class="accordion-header" id="addressHeader">
+                <button class="accordion-header" id="addressHeader" type="button">
                     Select Address
                     <span class="tick" id="addressTick">✔</span>
                 </button>
                 <div class="accordion-content" id="addressContent">
                     <form action="/checkout" method="post">
                         <div id="existingAddresses">
-                            <select name="address" id="addressSelect" required>
+                            <select name="address" id="addressSelect">
                                 <option value="">Select an address</option>
                                 <% address.forEach((addr)=> { %>
-                                    <option
-                                        value="<%= addr.name + ',' + addr.address + ',' + addr.pincode + ',' + addr.locality + ',' + addr.state %>">
+                                    <option value="<%= addr._id %>">
                                         <%= addr.name+ ', ' + addr.address + ', ' + addr.locality + ', ' + addr.state
                                             + ', ' + addr.pincode %>
                                     </option>
                                     <% }); %>
                             </select>
+
                         </div>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#addAddressModal" data-bs-whatever="@getbootstrap">Add Address</button>
                         <button type="button" id="confirmAddressBtn">Next</button>
                         <p id="addressError" class="error-message"></p>
 
-                </div>
-            </div>
+                       </div>
+                        </div>
 
-            <div class="accordion-item">
-                <button class="accordion-header" id="orderSummaryHeader">Order Summary</button>
+                         <div class="accordion-item">
+                         <button class="accordion-header" id="orderSummaryHeader" type="button">Order Summary</button>
 
-                <div class="accordion-content" id="orderSummaryContent">
-                    <% if (cart && cart.items.length> 0) { %>
+                          <div class="accordion-content" id="orderSummaryContent">
+                        <% if (cart && cart.items.length> 0) { %>
                         <% cart.items.forEach(item=> { %>
                             <div class="product">
                                 <div class="product-image">
@@ -505,12 +505,12 @@
                                     <p>Your cart is empty.</p>
                                     <% } %>
                                         <p id="orderSummaryError" class="error-message"></p>
-                </div>
-            </div>
+                          </div>
+                         </div>
 
 
             <div class="accordion-item">
-                <button class="accordion-header" id="paymentHeader">Payment Options</button>
+                <button class="accordion-header" id="paymentHeader" type="button">Payment Options</button>
                 <div class="accordion-content" id="paymentContent">
 
                     <div class="payment-options">
@@ -521,6 +521,7 @@
                     <button type="submit" id="confirmPaymentBtn" class="next-button">Place Order</button>
                     <p id="paymentError" class="error-message"></p>
 
+
                 </div>
             </div>
         </div>
@@ -530,7 +531,8 @@
             <div class="price-detail">
                 <span>Total Amount:</span>
                 <span class="price">
-                    <%= cart && cart.items ? cart.items.reduce((total, item)=> total + item.productId.price * item.quantity, 0).toFixed(2) : '0.00' %>
+                    <%= cart && cart.items ? cart.items.reduce((total, item)=> total + item.productId.price *
+                        item.quantity, 0).toFixed(2) : '0.00' %>
                 </span>
             </div>
             <div class="price-detail">
@@ -538,12 +540,19 @@
                 <span class="price" style="color: green;">15</span>
             </div>
             <div class="coupon-section">
-                <label for="couponCode">Coupon Code:</label>
-                <input type="text" id="couponCode" name="couponCode">
-                <button type="button" id="applyCouponBtn">Apply Coupon</button>
-                <button type="button" id="removeCouponBtn" style="display: none;">Remove Coupon</button>
+                <label for="couponCode">Coupon Code:</label><br>
+                <select id="couponCode" name="couponCode">
+                    <option value="">Select a coupon</option> 
+                    <% coupons.forEach(function(coupon) { %>
+                        <option value="<%= coupon.code %>"><%= coupon.code %></option>
+                    <% }); %>
+                </select>
+                <br>
+                <button type="button" id="applyCouponBtn" style="margin-top: 5px;">Apply Coupon</button>
+                <button type="button" id="removeCouponBtn" style="display: none; margin-top: 5px;">Remove Coupon</button>
                 <p id="couponError" class="error-message"></p>
             </div>
+            
             <div class="price-detail">
                 <span>Discount:</span>
                 <span class="price" id="discount-amount" style="color: red;">0.00</span>
@@ -551,14 +560,17 @@
             <div class="price-detail">
                 <span>GRAND TOTAL:</span>
                 <span class="price" id="grand-total">
-                    <%= cart && cart.items ? (cart.items.reduce((total, item)=> total + item.productId.price * item.quantity, 0) + 15).toFixed(2) : '15.00' %>
+                    <%= cart && cart.items ? (cart.items.reduce((total, item)=> total + item.productId.price *
+                        item.quantity, 0) + 15).toFixed(2) : '15.00' %>
                 </span>
-                <input type="hidden" id="grandTotalInput" name="grandTotal" value="<%= cart && cart.items ? (cart.items.reduce((total, item)=> total + item.productId.price * item.quantity, 0) + 15).toFixed(2) : '15.00' %>">
+                <input type="hidden" id="grandTotalInput" name="grandTotal"
+                    value="<%= cart && cart.items ? (cart.items.reduce((total, item)=> total + item.productId.price * item.quantity, 0) + 15).toFixed(2) : '15.00' %>">
             </div>
         </div>
-        
+ </form>
     </div>
 
+   
     <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -571,26 +583,39 @@
                         <div class="form-group">
                             <label for="add-name">Name</label>
                             <input type="text" class="form-control" id="add-name" name="name">
+                            <span id="add-name-error" class="error-message"></span>
+                            
                             <label for="add-address">Address</label>
                             <input type="text" class="form-control" id="add-address" name="address">
+                            <span id="add-address-error" class="error-message"></span>
+                            
                             <label for="add-phone">Phone</label>
                             <input type="text" class="form-control" id="add-phone" name="phone">
+                            <span id="add-phone-error" class="error-message"></span>
+                            
                             <label for="add-locality">Locality</label>
                             <input type="text" class="form-control" id="add-locality" name="locality">
+                            <span id="add-locality-error" class="error-message"></span>
+                            
                             <label for="add-pincode">Pincode</label>
                             <input type="text" class="form-control" id="add-pincode" name="pincode">
+                            <span id="add-pincode-error" class="error-message"></span>
+                            
                             <label for="add-state">State</label>
                             <input type="text" class="form-control" id="add-state" name="state">
+                            <span id="add-state-error" class="error-message"></span>
                         </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
+                <p id="couponid" style="display: none;"></p>
                 </form>
             </div>
         </div>
     </div>
+    
 
     <footer class="footer">
         <div class="containerr">
@@ -686,11 +711,9 @@
             });
 
             confirmPaymentBtn.addEventListener('click', () => {
-
                 if (!document.querySelector('input[name="payment"]:checked')) {
                     paymentError.textContent = "Please select a payment method.";
                 } else {
-
                     paymentError.textContent = "";
                     // Assuming the user completes the payment process successfully
                 }
@@ -716,40 +739,103 @@
                 content.style.display = content.style.display === 'block' ? 'none' : 'block';
             }
         });
+    </script>
 
-        function addAddress(event) {
-            event.preventDefault();
-            const name = document.getElementById('add-name').value;
-            const address = document.getElementById('add-address').value;
-            const phone = document.getElementById('add-phone').value;
-            const locality = document.getElementById('add-locality').value;
-            const pincode = document.getElementById('add-pincode').value;
-            const state = document.getElementById('add-state').value;
+<script>
+    function addAddress(event) {
+        event.preventDefault();
 
-            const data = { name, address, phone, locality, pincode, state };
+        const name = document.getElementById('add-name').value.trim();
+        const address = document.getElementById('add-address').value.trim();
+        const phone = document.getElementById('add-phone').value.trim();
+        const locality = document.getElementById('add-locality').value.trim();
+        const pincode = document.getElementById('add-pincode').value.trim();
+        const state = document.getElementById('add-state').value.trim();
 
-            fetch('/addAddress', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message === 'Address added successfully') {
-                        location.reload();
-                        $('#addAddressModal').modal('hide');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+        // Validation
+        if (name === '') {
+            showError('add-name-error', 'Please enter a name.');
+            return;
+        }
+        if (address === '') {
+            showError('add-address-error', 'Please enter an address.');
+            return;
+        }
+        if (phone === '') {
+            showError('add-phone-error', 'Please enter a phone number.');
+            return;
+        }
+        if (locality === '') {
+            showError('add-locality-error', 'Please enter a locality.');
+            return;
+        }
+        if (pincode === '') {
+            showError('add-pincode-error', 'Please enter a pincode.');
+            return;
+        }
+        if (state === '') {
+            showError('add-state-error', 'Please enter a state.');
+            return;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const addAddressForm = document.getElementById('addAddressForm');
-            addAddressForm.addEventListener('submit', addAddress);
+        // You can add more specific validation rules for each field if needed
+        // Example: Phone number format validation
+
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(phone)) {
+            showError('add-phone-error', 'Please enter a valid 10-digit phone number.');
+            return;
+        }
+
+        // Form data
+        const data = { name, address, phone, locality, pincode, state };
+
+        // POST request
+        fetch('/addAddress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Address added successfully') {
+                location.reload();
+                $('#addAddressModal').modal('hide');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function showError(inputId, message) {
+        const errorElement = document.getElementById(inputId);
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const addAddressForm = document.getElementById('addAddressForm');
+        addAddressForm.addEventListener('submit', addAddress);
+
+        // Reset error messages on input focus
+        const formInputs = addAddressForm.querySelectorAll('.form-control');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                const errorId = input.id + '-error';
+                const errorElement = document.getElementById(errorId);
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+            });
         });
-    </script>
+    });
+</script>
+
+
+
+
+
+
 
 
 
@@ -757,125 +843,123 @@
 
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('form[action="/checkout"]');
-    const paymentError = document.getElementById('paymentError');
-    const grandTotalSpan = document.getElementById('grand-total');
-   
-    const grandTotalValue = grandTotalSpan.textContent.trim().replace(/[^\d.-]/g, '');
-    const totalAmount = parseFloat(grandTotalValue);
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form[action="/checkout"]');
+            const paymentError = document.getElementById('paymentError');
+            const grandTotalSpan = document.getElementById('grand-total');
+            const grandTotalValue = grandTotalSpan.textContent.trim().replace(/[^\d.-]/g, '');
+            const totalAmount = parseFloat(grandTotalValue);
 
-    form.addEventListener('submit', async function (event) {
-        event.preventDefault(); // Prevent the default form submission
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault(); // Prevent the default form submission
+                const address = document.getElementById("addressSelect").value;
+                console.log(address)
+                const coupon = document.getElementById("couponid").innerHTML
+                console.log(coupon);
+                const paymentOption = document.querySelector('input[name="payment"]:checked').value;
+                console.log("paymentOption:", paymentOption);
 
-        const paymentOption = document.querySelector('input[name="payment"]:checked').value;
-        console.log("paymentOption:", paymentOption,);
+                if (paymentOption === 'razorpay') {
+                    try {
+                        const response = await fetch('/razorpay', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                amount: totalAmount,
+                                currency: 'INR',
+                                coupon: coupon
+                            })
+                        });
 
-        if (paymentOption === 'razorpay') {
-            try {
-                const response = await fetch('/razorpay', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        amount: totalAmount,
-                        currency: 'INR'
-                    })
-                });
+                        const data = await response.json();
+                        console.log("Razorpay response data:", data);
 
-                const data = await response.json();
-                console.log("Razorpay response data:", data);
+                        if (response.ok) {
+                            const options = {
+                                "key": data.key,
+                                "amount": data.amount,
+                                "currency": "INR",
+                                "name": data.name,
+                                "description": "Payment",
+                                "order_id": data.order_id,
+                                "handler": async function (response) {
+                                    try {
+                                        const result = await fetch("/razorpay-success", {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/json"
+                                            },
+                                            body: JSON.stringify({
+                                                razorpay_payment_id: response.razorpay_payment_id,
+                                                razorpay_order_id: response.razorpay_order_id,
+                                                razorpay_signature: response.razorpay_signature,
+                                                address: address
+                                            })
+                                        });
 
-                if (response.ok) {
-                    const options = {
-                        "key": data.key,
-                        "amount": data.amount,
-                        "currency": "INR",
-                        "name": data.name,
-                        "description": "Payment",
-                        "order_id": data.order_id,
-                        "handler": async function(response) {
-                            try {
-                                const result = await fetch("/razorpay-success", {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify({
-                                        razorpay_payment_id: response.razorpay_payment_id,
-                                        razorpay_order_id: response.razorpay_order_id,
-                                        razorpay_signature: response.razorpay_signature,
-                                        order_id: data.order_id,
-                                        user_id: data.user_id,
-                                        user_name: data.user_name,
-                                        user_email: data.user_email,
-                                        address: data.address,
-                                        items: data.items
-                                    })
-                                });
+                                        const resultData = await result.json();
 
-                                const resultData = await result.json();
+                                        if (resultData.error) {
+                                            return Swal.fire(resultData.error);
+                                        }
 
-                                if (resultData.error) {
-                                    return Swal.fire(resultData.error);
-                                }
-
-                                Swal.fire({
-                                    title: 'Order Placed',
-                                    text: 'Your Order has been placed.',
-                                    icon: 'success',
-                                    showCancelButton: true,
-                                    cancelButtonText: 'Continue Browsing',
-                                    confirmButtonText: 'Go To Your Order',
-                                    allowOutsideClick: false
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.href = '/order/' + resultData.id;
-                                    } else {
-                                        window.location.href = '/product-list/list';
+                                        Swal.fire({
+                                            title: 'Order Placed',
+                                            text: 'Your Order has been placed.',
+                                            icon: 'success',
+                                            showCancelButton: true,
+                                            cancelButtonText: 'Continue Browsing',
+                                            confirmButtonText: 'Go To Your Order',
+                                            allowOutsideClick: false
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '/order';
+                                            } else {
+                                                window.location.href = '/';
+                                            }
+                                        });
+                                    } catch (error) {
+                                        Swal.fire("Some Error Occurred.");
+                                        console.error('Error handling payment success:', error);
                                     }
-                                });
-                            } catch (error) {
-                                Swal.fire("Some Error Occurred.");
-                                console.error('Error handling payment success:', error);
-                            }
-                        },
-                        "prefill": {
-                            "name": data.prefill.name,
-                            "email": data.prefill.email,
-                            "contact": data.prefill.contact
-                        },
-                        "theme": {
-                            "color": data.theme.color
-                        }
-                    };
+                                },
+                                "prefill": {
+                                    "name": data.prefill.name,
+                                    "email": data.prefill.email,
+                                    "contact": data.prefill.contact
+                                },
+                                "theme": {
+                                    "color": data.theme.color
+                                }
+                            };
 
-                    const rzp = new Razorpay(options);
-                    rzp.on('payment.failed', function(response) {
-                        alert(response.error.code);
-                        alert(response.error.description);
-                        alert(response.error.source);
-                        alert(response.error.step);
-                        alert(response.error.reason);
-                        alert(response.error.metadata.order_id);
-                        alert(response.error.metadata.payment_id);
-                    });
-                    rzp.open();
+                            const rzp = new Razorpay(options);
+                            rzp.on('payment.failed', function (response) {
+                                alert(response.error.code);
+                                alert(response.error.description);
+                                alert(response.error.source);
+                                alert(response.error.step);
+                                alert(response.error.reason);
+                                alert(response.error.metadata.order_id);
+                                alert(response.error.metadata.payment_id);
+                            });
+                            rzp.open();
+                        } else {
+                            paymentError.innerText = data.message || 'Error processing payment.';
+                        }
+                    } catch (error) {
+                        paymentError.innerText = 'Error processing Razorpay payment.';
+                        console.error('Error details:', error);
+                    }
+                } else if (paymentOption === 'cod') {
+                    form.submit();
                 } else {
-                    paymentError.innerText = data.message || 'Error processing payment.';
+                    paymentError.innerText = 'Please select a payment option.';
                 }
-            } catch (error) {
-                paymentError.innerText = 'Error processing Razorpay payment.';
-                console.error('Error details:', error);
-            }
-        } else if (paymentOption === 'cod') {
-            form.submit();
-        } else {
-            paymentError.innerText = 'Please select a payment option.';
-        }
-    });
-});
+            });
+        });
 
     </script>
 
@@ -889,65 +973,67 @@
     <!-- coupon -->
 
     <script>
-       document.addEventListener('DOMContentLoaded', () => {
-    const applyCouponBtn = document.getElementById('applyCouponBtn');
-    const removeCouponBtn = document.getElementById('removeCouponBtn');
-    const couponCodeInput = document.getElementById('couponCode');
-    const couponError = document.getElementById('couponError');
-    const discountAmountElement = document.getElementById('discount-amount');
-    const grandTotalElement = document.getElementById('grand-total');
-    const grandTotalInput = document.getElementById('grandTotalInput');
+        document.addEventListener('DOMContentLoaded', () => {
+            const applyCouponBtn = document.getElementById('applyCouponBtn');
+            const removeCouponBtn = document.getElementById('removeCouponBtn');
+            const couponCodeInput = document.getElementById('couponCode');
+            const couponError = document.getElementById('couponError');
+            const discountAmountElement = document.getElementById('discount-amount');
+            const grandTotalElement = document.getElementById('grand-total');
+            const grandTotalInput = document.getElementById('grandTotalInput');
 
-    let originalTotal = parseFloat(grandTotalElement.textContent.trim());
+            let originalTotal = parseFloat(grandTotalElement.textContent.trim());
 
-    applyCouponBtn.addEventListener('click', () => {
-        const couponCode = couponCodeInput.value.trim();
+            applyCouponBtn.addEventListener('click', () => {
+                const couponCode = couponCodeInput.value.trim();
 
-        if (couponCode === '') {
-            couponError.textContent = "Please enter a coupon code.";
-            return;
-        }
-
-        fetch(`/validateCoupon/${couponCode}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                if (couponCode === '') {
+                    couponError.textContent = "Please enter a coupon code.";
+                    return;
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (data.valid) {
-                    const discountAmount = (originalTotal * data.discount / 100).toFixed(2);
-                    discountAmountElement.textContent = discountAmount;
 
-                    const discountedTotal = (originalTotal - discountAmount).toFixed(2);
-                    grandTotalElement.textContent = discountedTotal;
-                    grandTotalInput.value = discountedTotal;
+                fetch(`/validateCoupon/${couponCode}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.valid) {
+                            const discountAmount = (originalTotal * data.discount / 100).toFixed(2);
+                            discountAmountElement.textContent = discountAmount;
 
-                    removeCouponBtn.style.display = 'inline-block';
-                    applyCouponBtn.style.display = 'none';
-                    couponError.textContent = "";
-                } else {
-                    couponError.textContent = data.message;
-                }
-            })
-            .catch(error => {
-                console.error('Error validating coupon:', error);
-                couponError.textContent = "Error applying coupon.";
+                            const discountedTotal = (originalTotal - discountAmount).toFixed(2);
+                            grandTotalElement.textContent = discountedTotal;
+                            grandTotalInput.value = discountedTotal;
+
+                            document.getElementById("couponid").textContent = data.couponid
+
+                            removeCouponBtn.style.display = 'inline-block';
+                            applyCouponBtn.style.display = 'none';
+                            couponError.textContent = "";
+                        } else {
+                            couponError.textContent = data.message;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error validating coupon:', error);
+                        couponError.textContent = "Error applying coupon.";
+                    });
             });
-    });
 
-    removeCouponBtn.addEventListener('click', () => {
-        discountAmountElement.textContent = '0.00';
-        grandTotalElement.textContent = originalTotal.toFixed(2);
-        grandTotalInput.value = originalTotal.toFixed(2);
+            removeCouponBtn.addEventListener('click', () => {
+                discountAmountElement.textContent = '0.00';
+                grandTotalElement.textContent = originalTotal.toFixed(2);
+                grandTotalInput.value = originalTotal.toFixed(2);
 
-        couponCodeInput.value = '';
-        removeCouponBtn.style.display = 'none';
-        applyCouponBtn.style.display = 'inline-block';
-        couponError.textContent = '';
-    });
-});
+                couponCodeInput.value = '';
+                removeCouponBtn.style.display = 'none';
+                applyCouponBtn.style.display = 'inline-block';
+                couponError.textContent = '';
+            });
+        });
 
     </script>
 

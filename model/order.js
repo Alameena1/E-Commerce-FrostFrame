@@ -9,20 +9,19 @@ const orderSchema = new Schema({
     },
     userId: {
         type: Schema.Types.ObjectId,
-        required: true,
         ref: "User"
     },
     items: [{
-        productId: { type: Schema.Types.ObjectId, required: true },
-        productName: { type: String, required: true },
+        productId: { type: Schema.Types.ObjectId },
+        productName: { type: String},
         categoryId: { type: Schema.Types.ObjectId},
-        categoryName: { type: String, required: true },
+        categoryName: { type: String },
         productDescription: { type: String },
         productRating: { type: Number, default: 0 },
         stock: { type: Number },
         productImage: { type: [String] },
-        quantity: { type: Number, min: 1, required: true },
-        price: { type: Number, min: 0, required: true },
+        quantity: { type: Number, min: 1},
+        price: { type: Number, min: 0 },
         status: { type: String, default: "Pending" },
         reason: { type: String, default: "" },
         discountPrice: { type: Number, default: 0 },
@@ -33,16 +32,14 @@ const orderSchema = new Schema({
         couponCode: { type: String },
         discount: { type: Number }
     },
-    totalQuantity: { type: Number, min: 1, required: true },
-    totalPrice: { type: Number, min: 0, required: true },
+    totalQuantity: { type: Number, min: 1 },
+    totalPrice: { type: Number, min: 0 },
     address: {
         user: {
-            type: Schema.Types.ObjectId,
-            required: true
+            type: Schema.Types.ObjectId
         },
         name: {
-            type: String,
-            required: true
+            type: String
         },
         phoneNo: {
             type: Number
@@ -51,19 +48,16 @@ const orderSchema = new Schema({
             type: Number
         },
         locality: {
-            type: String,
-            required: true
+            type: String
         },
         address: {
-            type: String,
-            required: true
+            type: String
         },
         city: {
             type: String
         },
         state: {
-            type: String,
-            required: true
+            type: String
         },
         landmark: {
             type: String

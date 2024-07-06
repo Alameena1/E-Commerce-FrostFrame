@@ -172,9 +172,9 @@
             color: #fff;
             border: none;
         }
-       
     </style>
 </head>
+
 <body>
     <div class="sidebar">
         <h2>SALES</h2>
@@ -192,13 +192,16 @@
     <div class="content">
         <div class="overall">
             <div class="overall-item">
-                <h2>Total Sales Count: <%= totalSalesCount %></h2>
+                <h2>Total Sales Count: <%= totalSalesCount %>
+                </h2>
             </div>
             <div class="overall-item">
-                <h2>Total Order Amount: ₹<%= totalOrderAmount %></h2>
+                <h2>Total Order Amount: ₹<%= totalOrderAmount %>
+                </h2>
             </div>
             <div class="overall-item">
-                <h2>User Count: <%= userCount[0].userCount %></h2>
+                <h2>User Count: <%= userCount %>
+                </h2>
             </div>
         </div>
         <div class="box">
@@ -206,25 +209,29 @@
             <table>
                 <thead>
                     <div class="report-header">
-                        <a href="/admin/salesPdf" class="btn btn-dark" style="text-decoration: none; color: rgb(165, 162, 188);">Download Pdf</a>
+                        <a href="/admin/salesPdf" class="btn btn-dark"
+                            style="text-decoration: none; color: rgb(165, 162, 188);">Download Pdf</a>
                         <br>
-                        <a href="/admin/salesExcel" class="btn btn-dark" style="text-decoration: none; color: rgb(165, 162, 188);">Download Excel</a>
+                        <a href="/admin/salesExcel" class="btn btn-dark"
+                            style="text-decoration: none; color: rgb(165, 162, 188);">Download Excel</a>
                         <form action="/admin/salesreport" method="get">
                             <label for="start-date">Start Date:</label>
                             <input type="date" id="start-date" name="startDate">
                             <label for="end-date">End Date:</label>
                             <input type="date" id="end-date" name="endDate">
                             <select id="filterOption" name="filterOption">
+                                <option value="">Select Filter</option>
                                 <option value="daily">Daily</option>
                                 <option value="weekly">Weekly</option>
                                 <option value="monthly">Monthly</option>
                             </select>
                             <button type="submit" class="btn btn-sm btn-dark" style="margin-right: 40px">Filter</button>
                         </form>
+
                     </div>
-                    
-                    
-                    
+
+
+
                 </thead>
                 <thead>
                     <tr>
@@ -240,22 +247,49 @@
                     </tr>
                 </thead>
                 <tbody id="orderTableBody">
-                    <% orderss.forEach(order => { %>
-                    <tr>
-                        <td><%= order.createdAt.toDateString() %></td>
-                        <td><%= order._id %></td>
-                        <td><%= order.userId.name %></td>
-                        <td><%= order.items.map(item => item.productName).join(', ') %></td>
-                        <td><%= order.address.address %>, <%= order.address.city %>, <%= order.address.state %>, <%= order.address.pincode %></td>
-                        <td><%= order.items.map(item => item.discountPrice).join(', ') %></td>
-                        <td>₹<%= order.totalPrice %></td>
-                        <td><%= order.totalQuantity %></td>
-                        <td><%= order.paymentMethod %></td>
-                    </tr>
-                    <% }); %>
+                    <% orders.forEach(order=> { %>
+                        <tr>
+                            <td>
+                                <%= order.createdAt.toDateString() %>
+                            </td>
+                            <td>
+                                <%= order._id %>
+                            </td>
+                            <td>
+                                <%= order.userId.name %>
+                            </td>
+                            <td>
+                                <%= order.items.map(item=> item.productName).join(', ') %>
+                            </td>
+                            <td>
+                                <%= order.address.address %>, <%= order.address.city %>, <%= order.address.state %>, <%=
+                                                order.address.pincode %>
+                            </td>
+                            <td>
+                                <%= order.items.map(item=> item.discountPrice).join(', ') %>
+                            </td>
+                            <td>₹<%= order.totalPrice %>
+                            </td>
+                            <td>
+                                <%= order.totalQuantity %>
+                            </td>
+                            <td>
+                                <%= order.paymentMethod %>
+                            </td>
+                        </tr>
+                        <% }); %>
                 </tbody>
-                
+
             </table>
+        </div>
+
+        <div class="pagination">
+            <% for (let i=1; i <=totalPages; i++) { %>
+                <a href="/admin/salesreport?page=<%= i %>&startDate=<%= startDate ? startDate.toISOString().slice(0, 10) : '' %>&endDate=<%= endDate ? endDate.toISOString().slice(0, 10) : '' %>&filterOption=<%= filterOption || '' %>"
+                    class="<%= currentPage === i ? 'active' : '' %>">
+                    <%= i %>
+                </a>
+                <% } %>
         </div>
     </div>
 
@@ -295,14 +329,14 @@
             });
         });
 
-        
 
-     
+
+
     </script>
-<script>
-    
-</script>
-    
+    <script>
+
+    </script>
+
 </body>
 
 </html>

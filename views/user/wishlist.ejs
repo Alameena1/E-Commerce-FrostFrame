@@ -277,6 +277,15 @@
             opacity: 1;
             transition: opacity 0.15s linear;
         }
+        .emptycart {
+    background-image: url("/img/Screenshot\ 2024-06-24\ 131028.png");
+    background-size: cover;
+    background-position: center;
+    height: 700px; /* Adjust height as needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
     </style>
 </head>
 
@@ -350,7 +359,8 @@
                                 </a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <h6>My Orders</h6>
+                                <a href="/order" style="color: black;"><h6>My Orders</h6> </a>
+                                
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                                 <% if (!user.googleid) { %>
@@ -358,13 +368,15 @@
                                     <% } %>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <h6 style="cursor: pointer;">Wallet</h6>
+                                <a href="/wallet" style="color: black;"><h6>Wallet</h6> </a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <h6 style="cursor: pointer;">Coupon</h6>
+                                <a href="/coupon" style="color: black;"><h6>Coupon</h6> </a>
+                               
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                <h6 style="cursor: pointer;">Wish List</h6>
+                                <a href="/wishlist" style="color: black;"><h6>Wish List</h6> </a>
+                              
                             </li>
                         </ul>
                     </div>
@@ -386,7 +398,8 @@
                                         </div>
                                         <div class="col-md-3 text-right">
                                             <h5>₹ <%= item.price %> </h5>
-                                            <button style="width: 100px; height: 35px;" class="btn btn-danger delete-btn" data-product-id="<%= item.productId %>">Delete</button>
+                                            <button style="width: 100px; height: 35px; margin-bottom: 7px;" class="btn btn-danger delete-btn" data-product-id="<%= item.productId %>">Delete</button>
+                                            
                                             <button  style="width: 100px; height: 35px;"  class="btn btn-primary cart-btn" data-product-id="<%= item.productId %>">Add to Cart</button>
                                         </div>
                                     </div>
@@ -394,7 +407,9 @@
                                 <hr>
                             <% }); %>
                         <% } else { %>
-                            <p>No items in the wishlist.</p>
+                            <div class="emptycart" style="width: 400px; height: 500px; margin: auto;" >
+                        
+                            </div>
                         <% } %>
                     </div>
                 </div>

@@ -2,10 +2,22 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    background-image: url("/img/dark theme backgroun.jpg");
+    background-image: url("/img/need\ a\ image\ li\ d447e4ea-9d7e-4384-8435-82045f07000d.png");
     background-repeat: no-repeat;
     background-size: cover;
     font-family: Arial, sans-serif;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(54, 51, 51, 0.671); /* Adjust the alpha value to control the intensity */
+    z-index: -1; /* Ensure the overlay is behind other content */
 }
 
 .container {
@@ -13,6 +25,8 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    position: relative;
+    z-index: 1;
 }
 
 h1 {
