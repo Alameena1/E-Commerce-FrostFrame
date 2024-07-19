@@ -59,6 +59,9 @@ router.post("/razorpay",usercontroller.postrazorpay)
 router.post("/razorpay-success",usercontroller.postrazorpaysuccess)
 router.post("/razorpay-success",usercontroller.postrazorpaysuccess)
 router.post("/return-order",usercontroller.postreturn)
+router.post("/razorpay-failure",usercontroller.postrazorpayfail)
+router.post("/razorpayretrysuccess",usercontroller.razorpayretrysuccess)
+
 
 
 

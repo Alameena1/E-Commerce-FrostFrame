@@ -210,11 +210,13 @@
                 <thead>
                     <div class="report-header">
                         <a href="/admin/salesPdf" class="btn btn-dark"
-                            style="text-decoration: none; color: rgb(165, 162, 188);">Download Pdf</a>
-                        <br>
+                            style="text-decoration: none; color: rgb(30, 0, 255); background-color: wheat;">Download Pdf</a>
+                       
                         <a href="/admin/salesExcel" class="btn btn-dark"
-                            style="text-decoration: none; color: rgb(165, 162, 188);">Download Excel</a>
-                        <form action="/admin/salesreport" method="get">
+                            style="text-decoration: none; color: rgb(30, 0, 255); background-color: wheat;margin-left: 20px;">Download Excel</a>
+                       
+                       <br>
+                            <form action="/admin/salesreport" method="get">
                             <label for="start-date">Start Date:</label>
                             <input type="date" id="start-date" name="startDate">
                             <label for="end-date">End Date:</label>
@@ -284,13 +286,14 @@
         </div>
 
         <div class="pagination">
-            <% for (let i=1; i <=totalPages; i++) { %>
+            <% for (let i = 1; i <= totalPages; i++) { %>
                 <a href="/admin/salesreport?page=<%= i %>&startDate=<%= startDate ? startDate.toISOString().slice(0, 10) : '' %>&endDate=<%= endDate ? endDate.toISOString().slice(0, 10) : '' %>&filterOption=<%= filterOption || '' %>"
-                    class="<%= currentPage === i ? 'active' : '' %>">
+                   class="<%= currentPage === i ? 'active' : '' %>">
                     <%= i %>
                 </a>
-                <% } %>
+            <% } %>
         </div>
+        
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfkit/0.11.0/pdfkit.min.js"></script>

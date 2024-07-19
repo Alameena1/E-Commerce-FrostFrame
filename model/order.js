@@ -68,14 +68,15 @@ const orderSchema = new Schema({
     },
     paymentMethod: { type: String, required: true },
     orderDate: { type: Date, default: Date.now },
-    createdAt: { type: Date, default: Date.now }
-});
+    reason:{
+        type:String
+    }
+}, { timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } });
 
-// Pre-save hook to set orderDate and createdAt fields using Moment.js
+// Pre-save hook to set orderDate field using Moment.js
 orderSchema.pre('save', function (next) {
     const now = moment().tz("Asia/Kolkata");
     this.orderDate = now.toDate();
-    this.createdAt = now.toDate();
     next();
 });
 

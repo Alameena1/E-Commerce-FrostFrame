@@ -400,6 +400,54 @@
             color: white;
             background-color: #007bff;
         }
+           /*  */
+           .nav-options {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropbtn {
+    background-color: #000000; /* Change as needed */
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #000000;
+}
+
+        /*  */
     </style>
 </head>
 
@@ -410,15 +458,13 @@
         </div>
         <div class="nav-options">
             <div class="dropdown">
-                <div class="dropdown" 2>
-
-                    <div class="dropdown-content">
-                        <% newcategory.forEach((categories, index)=> { %>
-                            <a href="/sunglass?categoryName=<%=categories.categoryName %>">
-                                <%= categories.categoryName %>
-                            </a>
-                            <% }); %>
-                    </div>
+                <button class="dropbtn">Categories</button>
+                <div class="dropdown-content">
+                    <% newcategory.forEach((categories, index) => { %>
+                        <a href="/sunglass?categoryName=<%= categories.categoryName %>">
+                            <%= categories.categoryName %>
+                        </a>
+                    <% }); %>
                 </div>
             </div>
         </div>
@@ -510,9 +556,13 @@
 
 
             <div class="accordion-item">
+                
+     <% if(error_messages){ %>
+                        <p style="color: red; text-align: center;"><%= error_messages %></p>
+                    <% } %>
                 <button class="accordion-header" id="paymentHeader" type="button">Payment Options</button>
                 <div class="accordion-content" id="paymentContent">
-
+                   
                     <div class="payment-options">
                         <label><input type="radio" name="payment" value="razorpay"> Razorpay</label>
                         <label><input type="radio" name="payment" value="cod"> Cash on Delivery</label>
@@ -849,15 +899,18 @@
             const grandTotalSpan = document.getElementById('grand-total');
             const grandTotalValue = grandTotalSpan.textContent.trim().replace(/[^\d.-]/g, '');
             const totalAmount = parseFloat(grandTotalValue);
+          
 
             form.addEventListener('submit', async function (event) {
                 event.preventDefault(); // Prevent the default form submission
                 const address = document.getElementById("addressSelect").value;
-                console.log(address)
+                console.log("aaaaaaaaaaaaaaa",address)
                 const coupon = document.getElementById("couponid").innerHTML
-                console.log(coupon);
                 const paymentOption = document.querySelector('input[name="payment"]:checked').value;
-                console.log("paymentOption:", paymentOption);
+          if(!address){
+            paymentError.innerText = 'please select your address ';
+            console.error('Error details:', error);
+          }
 
                 if (paymentOption === 'razorpay') {
                     try {
@@ -869,7 +922,8 @@
                             body: JSON.stringify({
                                 amount: totalAmount,
                                 currency: 'INR',
-                                coupon: coupon
+                                coupon: coupon,
+                                address:address
                             })
                         });
 
@@ -934,16 +988,44 @@
                                     "color": data.theme.color
                                 }
                             };
-
                             const rzp = new Razorpay(options);
-                            rzp.on('payment.failed', function (response) {
-                                alert(response.error.code);
-                                alert(response.error.description);
-                                alert(response.error.source);
-                                alert(response.error.step);
-                                alert(response.error.reason);
-                                alert(response.error.metadata.order_id);
-                                alert(response.error.metadata.payment_id);
+                    rzp.on('payment.failed', async function (response) {
+                        try {
+                            rzp.close()
+                            const result = await fetch("/razorpay-failure", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: response.error.metadata.payment_id,
+                                    razorpay_order_id: response.error.metadata.order_id,
+                                    razorpay_error: response.error,
+                                    address: address,
+                                    coupon:coupon   
+
+                                })
+                            });
+
+                            const resultData = await result.json();
+                            Swal.fire({
+                                title: 'Payment Failed',
+                                text: 'Your payment has failed. Please try again.',
+                                icon: 'error',
+                                showCancelButton: true,
+                              
+                                confirmButtonText: 'Go To Your Order',
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '/order';
+                                } 
+                            });
+                        } catch (error) {
+                            Swal.fire("Some Error Occurred.");
+                            console.error('Error handling payment failure:', error);
+                        }
+
                             });
                             rzp.open();
                         } else {
@@ -971,7 +1053,6 @@
 
 
     <!-- coupon -->
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const applyCouponBtn = document.getElementById('applyCouponBtn');
@@ -981,18 +1062,18 @@
             const discountAmountElement = document.getElementById('discount-amount');
             const grandTotalElement = document.getElementById('grand-total');
             const grandTotalInput = document.getElementById('grandTotalInput');
-
+    
             let originalTotal = parseFloat(grandTotalElement.textContent.trim());
-
+    
             applyCouponBtn.addEventListener('click', () => {
                 const couponCode = couponCodeInput.value.trim();
-
+    
                 if (couponCode === '') {
                     couponError.textContent = "Please enter a coupon code.";
                     return;
                 }
-
-                fetch(`/validateCoupon/${couponCode}`)
+            
+                fetch(`/validateCoupon/${couponCode}?total=${originalTotal}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -1001,15 +1082,20 @@
                     })
                     .then(data => {
                         if (data.valid) {
-                            const discountAmount = (originalTotal * data.discount / 100).toFixed(2);
+                            let discountAmount;
+                            if (data.fixed) {
+                                discountAmount = data.discount.toFixed(2);
+                            } else {
+                                discountAmount = (originalTotal * data.discount / 100).toFixed(2);
+                            }
                             discountAmountElement.textContent = discountAmount;
-
+    
                             const discountedTotal = (originalTotal - discountAmount).toFixed(2);
                             grandTotalElement.textContent = discountedTotal;
                             grandTotalInput.value = discountedTotal;
-
+    
                             document.getElementById("couponid").textContent = data.couponid
-
+    
                             removeCouponBtn.style.display = 'inline-block';
                             applyCouponBtn.style.display = 'none';
                             couponError.textContent = "";
@@ -1022,20 +1108,20 @@
                         couponError.textContent = "Error applying coupon.";
                     });
             });
-
+    
             removeCouponBtn.addEventListener('click', () => {
                 discountAmountElement.textContent = '0.00';
                 grandTotalElement.textContent = originalTotal.toFixed(2);
                 grandTotalInput.value = originalTotal.toFixed(2);
-
+    
                 couponCodeInput.value = '';
                 removeCouponBtn.style.display = 'none';
                 applyCouponBtn.style.display = 'inline-block';
                 couponError.textContent = '';
             });
         });
-
     </script>
+    
 
 
     <!-- coupon -->

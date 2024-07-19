@@ -49,14 +49,14 @@ admrouter.get("/salesExcel",isAuth,admincontroller.getsalesExcel)
 admrouter.get("/coupon",isAuth,admincontroller.getcouponmanagement)
 admrouter.get("/addcoupon",isAuth,admincontroller.getaddcoupon)
 admrouter.get("/editcoupon/:_id", admincontroller.geteditcoupon);
+admrouter.get("/salesfilter", admincontroller.getsalesfilter);
 
 
 
 admrouter.post("/",admincontroller.postlogin)
 admrouter.post("/categorymanagement",isAuth,admincontroller.postaddcategorymanagement)
 admrouter.post("/editcategory/:_id",admincontroller.posteditcategory)
-// admrouter.post("/admin/add-product", admincontroller. postaddproductmanagement
-// );
+
 admrouter.post("/add-product", multer({ storage: fileStorage, fileFilter: fileFilter }).array("product_image", 3), admincontroller.postaddproductmanagement);
 admrouter.post("/block-user/:_id", admincontroller.postBlockUser);
 admrouter.post("/block-product/:_id", admincontroller.postBlockproduct);

@@ -66,6 +66,9 @@
                     <th>S.No</th>
                     <th>Coupon code</th>
                     <th>Discount(%)</th>
+                    <th>fixedRate</th>
+                    <th>Min amount</th>
+                    <th>Max amount</th>
                     <th>Create Date</th>
                     <th>EXpiry Date</th>
                     <th>Edit</th>
@@ -78,6 +81,9 @@
                         <td><%= index + 1 %></td>
                         <td><%= coupon.code %></td>
                         <td><%= coupon.discountValue %></td>
+                        <td><%= coupon.fixedRate %></td>
+                        <td><%= coupon.minimum%> </td>
+                        <td><%= coupon.maximum %></td>
                         <td><%= coupon.usedBy.toISOString().split('T')[0]%></td>
                         <td><%= coupon.expirationDate.toISOString().split('T')[0] %></td>
                         <td><a href="/admin/editcoupon/<%= coupon._id %>"><button>Edit</button></a></td>

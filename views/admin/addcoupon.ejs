@@ -69,27 +69,38 @@
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
         </a>
-
         <form id="couponForm" action="/admin/addcoupon" method="POST">
-
             <label for="couponCode">Coupon Code:</label>
             <input type="text" id="couponCode" name="couponCode"><br>
             <span id="couponCodeError" class="error"></span>
-
+    
             <label for="discount">Discount (%):</label>
             <input type="number" id="discount" name="discount" step="0.01"><br>
             <span id="discountError" class="error"></span>
-
+    
+            <label for="fixedRate">Fixed Discount Rate:</label>
+            <input type="number" id="fixedRate" name="fixedRate" step="0.01"><br>
+            <span id="fixedRateError" class="error"></span>
+    
             <label for="createDate">Create Date:</label>
             <input type="date" id="createDate" name="createDate"><br>
             <span id="createDateError" class="error"></span>
-
+    
             <label for="expiryDate">Expiry Date:</label>
             <input type="date" id="expiryDate" name="expiryDate"><br>
             <span id="expiryDateError" class="error"></span>
-
+    
+            <label for="maxAmount">Maximum Discount Amount:</label>
+            <input type="number" id="maxAmount" name="maxAmount" step="0.01"><br>
+            <span id="maxAmountError" class="error"></span>
+    
+            <label for="minPurchaseAmount">Minimum Purchase Amount:</label>
+            <input type="number" id="minPurchaseAmount" name="minPurchaseAmount" step="0.01"><br>
+            <span id="minPurchaseAmountError" class="error"></span>
+    
             <button type="submit">Add Coupon</button>
         </form>
+        
     </div>
 
     <script>
@@ -123,8 +134,8 @@
 
             // Discount validation
             const discount = parseFloat(discountInput.value);
-            if (isNaN(discount) || discount < 0 || discount > 100) {
-                discountError.textContent = 'Discount must be a number between 0 and 100.';
+            if (isNaN(discount) || discount < 0 || discount > 69) {
+                discountError.textContent = 'Discount must be a number between 0 and 69.';
                 discountInput.classList.add('error');
                 isValid = false;
             } else {
@@ -170,6 +181,40 @@
             expiryDateInput.setAttribute('min', minExpiryDate);
         });
     </script>
+
+
+<!-- min max validation -->
+
+<script>
+    document.getElementById('couponForm').addEventListener('submit', function(event) {
+        const maxAmount = parseFloat(document.getElementById('maxAmount').value);
+        const minPurchaseAmount = parseFloat(document.getElementById('minPurchaseAmount').value);
+        
+        let isValid = true;
+
+        if (maxAmount && minPurchaseAmount) {
+            if (minPurchaseAmount > maxAmount) {
+                document.getElementById('minPurchaseAmountError').textContent = 'Minimum purchase amount cannot be higher than the maximum discount amount.';
+                isValid = false;
+            } else {
+                document.getElementById('minPurchaseAmountError').textContent = '';
+            }
+
+            if (maxAmount < minPurchaseAmount) {
+                document.getElementById('maxAmountError').textContent = 'Maximum discount amount cannot be lower than the minimum purchase amount.';
+                isValid = false;
+            } else {
+                document.getElementById('maxAmountError').textContent = '';
+            }
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent form submission if validation fails
+        }
+    });
+</script>
+
+<!-- min max validation -->
 
 </body>
 

@@ -180,7 +180,9 @@
                             <td><%= item.productName %></td>
                             <td><%= order.address.address %>, <%= order.address.city %>, <%= order.address.state %></td>
                             <td>
-                                <% if (item.status !== 'Cancelled' && item.status !== 'Delivered' && item.status !== 'Returned') { %>
+                                <% if (order.reason === 'payment_failed') { %>
+                                    <p style="color: orange;">Payment Pending</p>
+                                <% } else if (item.status !== 'Cancelled' && item.status !== 'Delivered' && item.status !== 'Returned') { %>
                                     <form action="/admin/change-status/<%= order._id %>" method="POST">
                                         <input type="hidden" name="productId" value="<%= item.productId %>">
                                         <select name="status" class="dropdown" onchange="this.form.submit()">
@@ -196,8 +198,8 @@
                                 <% } else { %>
                                     <p style="color: red;"><%= item.status %></p>
                                 <% } %>
-                                
                             </td>
+                            
                             
                             
                             <td>$<%= item.price*item.quantity %></td>

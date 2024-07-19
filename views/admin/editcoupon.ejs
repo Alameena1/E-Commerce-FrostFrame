@@ -60,7 +60,7 @@
 <body>
 
     <div class="container">
-        <h1>Add Coupon</h1>
+        <h1>Edit Coupon</h1>
         <a href="javascript:history.back()">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -80,6 +80,10 @@
             <input type="number" id="discount" name="discount" step="0.01" value="<%= coupons.discountValue%>"><br>
             <span id="discountError" class="error"></span>
 
+            <label for="fixedRate">Fixed Discount Rate:</label>
+            <input type="number" id="fixedRate" name="fixedRate" step="0.01" value="<%= coupons.fixedRate%>"><br>
+            <span id="fixedRateError" class="error"></span>
+
             <label for="createDate">Create Date:</label>
             <input type="date" id="createDate" name="createDate" value="<%= coupons.usedBy.toISOString().split('T')[0] %>""><br>
             <span id="createDateError" class="error"></span>
@@ -87,6 +91,14 @@
             <label for="expiryDate">Expiry Date:</label>
             <input type="date" id="expiryDate" name="expiryDate" value="<%= coupons.expirationDate.toISOString().split('T')[0]%>""><br>
             <span id="expiryDateError" class="error"></span>
+
+            <label for="maxAmount">Maximum Discount Amount:</label>
+            <input type="number" id="maxAmount" name="maxAmount" step="0.01" value="<%= coupons.maximum%>"><br>
+            <span id="maxAmountError" class="error"></span>
+        
+            <label for="minPurchaseAmount">Minimum Purchase Amount:</label>
+            <input type="number" id="minPurchaseAmount" name="minPurchaseAmount" step="0.01" value="<%= coupons.minimum%>"><br>
+            <span id="minPurchaseAmountError" class="error"></span>
 
             <button type="submit">Save Changes</button>
         </form>
@@ -100,17 +112,23 @@
             const discountInput = document.getElementById('discount');
             const createDateInput = document.getElementById('createDate');
             const expiryDateInput = document.getElementById('expiryDate');
+            const maxAmountInput = document.getElementById('maxAmount');
+            const minPurchaseAmountInput = document.getElementById('minPurchaseAmount');
 
             const couponCodeError = document.getElementById('couponCodeError');
             const discountError = document.getElementById('discountError');
             const createDateError = document.getElementById('createDateError');
             const expiryDateError = document.getElementById('expiryDateError');
+            const maxAmountError = document.getElementById('maxAmountError');
+            const minPurchaseAmountError = document.getElementById('minPurchaseAmountError');
 
             // Clear previous error messages
             couponCodeError.textContent = '';
             discountError.textContent = '';
             createDateError.textContent = '';
             expiryDateError.textContent = '';
+            maxAmountError.textContent = '';
+            minPurchaseAmountError.textContent = '';
 
             // Coupon Code validation
             if (!/^[A-Za-z0-9\s]+$/.test(couponCodeInput.value)) {
@@ -155,6 +173,37 @@
                 expiryDateInput.classList.remove('error');
             }
 
+            // Maximum Discount Amount validation
+            const maxAmount = parseFloat(maxAmountInput.value);
+            if (isNaN(maxAmount) || maxAmount <= 0) {
+                maxAmountError.textContent = 'Maximum Discount Amount must be a positive number.';
+                maxAmountInput.classList.add('error');
+                isValid = false;
+            } else {
+                maxAmountInput.classList.remove('error');
+            }
+
+            // Minimum Purchase Amount validation
+            const minPurchaseAmount = parseFloat(minPurchaseAmountInput.value);
+            if (isNaN(minPurchaseAmount) || minPurchaseAmount <= 0) {
+                minPurchaseAmountError.textContent = 'Minimum Purchase Amount must be a positive number.';
+                minPurchaseAmountInput.classList.add('error');
+                isValid = false;
+            } else {
+                minPurchaseAmountInput.classList.remove('error');
+            }
+
+            // Validate that Maximum Discount Amount is greater than or equal to Minimum Purchase Amount
+            if (maxAmount < minPurchaseAmount) {
+                maxAmountError.textContent = 'Maximum Discount Amount cannot be less than Minimum Purchase Amount.';
+                maxAmountInput.classList.add('error');
+                minPurchaseAmountInput.classList.add('error');
+                isValid = false;
+            } else {
+                maxAmountInput.classList.remove('error');
+                minPurchaseAmountInput.classList.remove('error');
+            }
+
             if (!isValid) {
                 event.preventDefault();
             }
@@ -172,5 +221,6 @@
     </script>
 
 </body>
+
 
 </html>

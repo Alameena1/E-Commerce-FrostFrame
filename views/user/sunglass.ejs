@@ -59,6 +59,54 @@
         .wishlist-icon .fa-heart.active {
             color: red;
         }
+           /*  */
+           .nav-options {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropbtn {
+    background-color: #000000; /* Change as needed */
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #000000;
+}
+
+        /*  */
     </style>
 </head>
 
@@ -71,17 +119,21 @@
                 </a>
             </div>
             <div class="nav-options">
-                <div class="dropdown-content">
-                    <% unblockCategory.forEach((categories, index) => { %>
-                    <a href="/sunglass?categoryName=<%=categories.categoryName %>"><%= categories.categoryName %></a>
-                    <% }); %>
+                <div class="dropdown">
+                    <button class="dropbtn">Categories</button>
+                    <div class="dropdown-content">
+                        <% unblockCategory.forEach((categories, index) => { %>
+                            <a href="/sunglass?categoryName=<%= categories.categoryName %>">
+                                <%= categories.categoryName %>
+                            </a>
+                        <% }); %>
+                    </div>
                 </div>
-             
             </div>
             <div class="nav-icons">
                 <ul>
                     <form action="/sunglass" class="search-bar">
-                        <input type="text" name="query" placeholder="Search...">
+                        <input type="text" name="query" placeholder="Search..." style="border: none;">
                         <button type="submit"><box-icon name='search'><i class='bx bx-search'></i></box-icon></button>
                     </form>
                     <li><a href="/cart"><i class="bi bi-cart-fill" style="color: white;"></i></a></li>
@@ -105,8 +157,7 @@
     <div class="filter-container" style="text-align: right;">
         <label for="sort-filter">Filetr:</label>
         <select id="sort-filter">
-            <option value="featured">Featured</option>
-            <option value="new-arrivals">New Arrivals</option>
+       
             <option value="price-low-high">Price: Low to High</option>
             <option value="price-high-low">Price: High to Low</option>
             <option value="a-z">A - Z</option>

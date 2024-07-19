@@ -6,6 +6,7 @@
     <title>E-commerce Admin Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="/asset/admin/dashbord.css">
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <style>
         .sidebar ul li a.active, .sidebar ul li a:hover {
             background-color: #555;
@@ -70,111 +71,163 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function() {
           var links = document.querySelectorAll('.sidebar ul li a');
           var activePage = localStorage.getItem('activePage');
-    
+  
           if (activePage) {
-            links.forEach(function(link) {
-              link.classList.remove('active');
-            });
-    
-            var activeLink = document.querySelector('.sidebar ul li a[data-page="' + activePage + '"]');
-            if (activeLink) {
-              activeLink.classList.add('active');
-            }
-          }
-    
-          links.forEach(function(link) {
-            link.addEventListener('click', function(event) {
-              links.forEach(function(l) {
-                l.classList.remove('active');
+              links.forEach(function(link) {
+                  link.classList.remove('active');
               });
-              link.classList.add('active');
-              localStorage.setItem('activePage', link.getAttribute('data-page'));
-            });
+  
+              var activeLink = document.querySelector('.sidebar ul li a[data-page="' + activePage + '"]');
+              if (activeLink) {
+                  activeLink.classList.add('active');
+              }
+          }
+  
+          links.forEach(function(link) {
+              link.addEventListener('click', function(event) {
+                  links.forEach(function(l) {
+                      l.classList.remove('active');
+                  });
+                  link.classList.add('active');
+                  localStorage.setItem('activePage', link.getAttribute('data-page'));
+              });
           });
-    
+  
           var salesData = <%- JSON.stringify(salesData) %>;
           var productsChartData = <%- JSON.stringify(productsChartData) %>;
           var categoriesChartData = <%- JSON.stringify(categoriesChartData) %>;
+      
+  
+            // Function to fetch and process data based on filter
+            function fetchAndProcessData(filter) {
+                fetch(`/admin/salesfilter?filter=${filter}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("data",data);
+                        // Clear existing chart data
+                        salesChart.data.labels = [];
+                        salesChart.data.datasets[0].data = [];
     
-          var ctx = document.getElementById('salesChart').getContext('2d');
-          var salesChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: salesData.labels,
-              datasets: [{
-                label: 'Sales',
-                data: salesData.data,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-              }]
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true
-                }
-              }
+                        // Process data based on filter type
+                        if (filter === 'yearly') {
+                            // Update labels with months
+                            salesChart.data.labels = moment.months();
+                            // Update dataset with yearly sales data
+                            let a=[];
+                       
+                            for(let i=1;i<data[0]._id;i++){
+                                a.push(0)
+                            }
+                            for(let monthData of data){
+                                a.push(monthData.totalSales)
+                            }
+                            salesChart.data.datasets[0].data = a;
+                        } else if (filter === 'monthly') {
+                            // Update labels with weeks in the selected month
+                            salesChart.data.labels = Array.from({ length: 4 }, (_, i) => `Week ${i + 1}`);
+                       
+                            // Update dataset with weekly sales data
+                            salesChart.data.datasets[0].data = data.map(weekData => weekData.totalSales);
+                        } else if (filter === 'weekly') {
+                            // Update labels with days in the selected week
+                            salesChart.data.labels = Array.from({ length: 7 }, (_, i) => moment().startOf('week').add(i, 'days').format('ddd'));
+                            console.log(" salesChart.data.labels week", salesChart.data.labels)
+    
+                            // Update dataset with daily sales data
+                            salesChart.data.datasets[0].data = data.map(dayData => dayData.totalSales);
+                          
+                        }
+    
+                        // Update the chart
+                        salesChart.update();
+                    })
+                    .catch(error => console.error('Error fetching sales data:', error));
             }
-          });
     
-          document.getElementById('chartFilter').addEventListener('change', function() {
-            var filterValue = this.value;
-            salesChart.data.labels = salesData.labels;
-            salesChart.data.datasets[0].data = salesData.data;
-            salesChart.update();
-          });
+            // Event listener for filter selection
+            document.getElementById('chartFilter').addEventListener('change', function() {
+                var filterValue = this.value;
+                fetchAndProcessData(filterValue);
+            });
     
+            // Initial fetch and process data based on the default filter value
+            var initialFilter = document.getElementById('chartFilter').value;
+            fetchAndProcessData(initialFilter);
+    
+            // Chart.js setup
+            var ctxSales = document.getElementById('salesChart').getContext('2d');
+            var salesChart = new Chart(ctxSales, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Sales',
+                        data: [],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+  
           var ctxProducts = document.getElementById('bestSellingProductsChart').getContext('2d');
           var bestSellingProductsChart = new Chart(ctxProducts, {
-            type: 'bar',
-            data: {
-              labels: productsChartData.labels,
-              datasets: [{
-                label: 'Top 10 Selling Products',
-                data: productsChartData.data,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
-              }]
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true
-                }
+              type: 'bar',
+              data: {
+                  labels: productsChartData.labels,
+                  datasets: [{
+                      label: 'Top 10 Selling Products',
+                      data: productsChartData.data,
+                      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                      borderColor: 'rgba(255, 99, 132, 1)',
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      y: {
+                          beginAtZero: true
+                      }
+                  }
               }
-            }
           });
-    
+  
           var ctxCategories = document.getElementById('bestSellingCategoriesChart').getContext('2d');
           var bestSellingCategoriesChart = new Chart(ctxCategories, {
-            type: 'pie',
-            data: {
-              labels: categoriesChartData.labels,
-              datasets: [{
-                label: 'Top 10 Selling Categories',
-                data: categoriesChartData.data,
-                backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)'
-                ],
-                borderColor: [
-                  'rgba(255, 99, 132, 1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)'
-                ],
-                borderWidth: 1
-              }]
-            }
+              type: 'pie',
+              data: {
+                  labels: categoriesChartData.labels,
+                  datasets: [{
+                      label: 'Top 10 Selling Categories',
+                      data: categoriesChartData.data,
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              }
           });
-        });
-      </script>
+      });
+  </script>
+  
 </body>
 </html>

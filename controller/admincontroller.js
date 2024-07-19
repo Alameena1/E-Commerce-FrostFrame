@@ -1,8 +1,11 @@
+const path=require('path')
+const fs=require('fs')
+
 const express = require("express")
 const multer = require('multer');
 const router = express.Router()
 const PDFDocument = require('pdfkit');
-const PDFTable = require('pdfkit-table');
+const PDFDocument2 = require('pdfkit-table');
 const ExcelJS = require('exceljs');
 const moment = require("moment-timezone")
 
@@ -19,7 +22,8 @@ const Coupon = require('../model/coupon');
 
 
 const getlogin = (req, res) => {
-
+    
+   
     res.render('admin/login', { errorMessage: req.flash("error") })
 
 
@@ -40,7 +44,7 @@ const postlogin = async (req, res) => {
 
 
 
-            return res.render("admin/dashbord"); // Corrected dashboard spelling
+            return res.redirect("/admin/dashbord"); // Corrected dashboard spelling
         } else {
             req.flash("error", "Email or password is incorrect");
             console.log("Email or password was incorrect.");
@@ -66,6 +70,7 @@ const getdashbord = async (req, res) => {
             labels: moment.months(), // ['January', 'February', 'March', ...]
             data: Array(12).fill(0)
         };
+        console.log(salesData);
 
         const productsData = {};
         const categoriesData = {};
@@ -175,22 +180,6 @@ const postBlockUser = async (req, res) => {
 
 
 
-// const getproductmanagement = async (req,res) => {
-//     try {
-//         const newProduct =await product.find()
-//         res.render('admin/productmanagement',{newProduct})
-
-//     } catch (error) {
-
-//         res.send(error)
-//     }
-
-// }
-
-
-// Backend - admincontroller.js
-
-// Backend - admincontroller.js
 
 const getproductmanagement = async (req, res) => {
     try {
@@ -438,15 +427,26 @@ const getaddcategorymanagement = (req, res) => {
 // post
 const postaddcategorymanagement = async (req, res) => {
     try {
-        const categoryName = req.body.categoryName;
-        const categoryNametrim = req.body.categoryName.trim();
-
-        if (categoryNametrim === '') {
+        const categoryName = req.body.categoryName.trim();
+        const description = req.body.description.trim();
+        
+        if (categoryName === '') {
             req.flash("error", "Category name cannot be empty");
             return res.redirect("/admin/add-category");
         }
+
         if (categoryName.length > 15) {
-            req.flash("error", "NAME IS TOO LONG MAKE IT SHORT");
+            req.flash("error", "Category name is too long. Make it shorter.");
+            return res.redirect("/admin/add-category");
+        }
+
+        if (description === '') {
+            req.flash("error", "Description cannot be empty");
+            return res.redirect("/admin/add-category");
+        }
+
+        if (description.length > 100) { // Assuming a reasonable length for the description
+            req.flash("error", "Description is too long. Keep it under 100 characters.");
             return res.redirect("/admin/add-category");
         }
 
@@ -455,9 +455,8 @@ const postaddcategorymanagement = async (req, res) => {
         if (existingCategory) {
             req.flash("error", "Category already exists");
             return res.redirect("/admin/add-category");
-        }
-        else {
-            const newCategory = await category.create({ categoryName: categoryName });
+        } else {
+            const newCategory = await category.create({ categoryName: categoryName, description: description });
             console.log("New category created:", newCategory);
 
             res.redirect("/admin/categorymanagement");
@@ -468,6 +467,7 @@ const postaddcategorymanagement = async (req, res) => {
         res.redirect("/admin/categorymanagement");
     }
 }
+
 
 
 const geteditcategory = async (req, res) => {
@@ -576,7 +576,7 @@ const logout = (req, res) => {
 const getorder = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const perPage = 6; // Number of products per page
+        const perPage = 10; // Number of products per page
         const skip = (page - 1) * perPage;
 
         const totalCount = await Order.countDocuments(); // Get total count of orders
@@ -688,31 +688,109 @@ const getsalesreport = async (req, res) => {
 
 
 const getsalesPdf = async (req, res) => {
-     try {
-        console.log("Generating Sales PDF Report...");
+    //  try {
+    //     console.log("Generating Sales PDF Report...");
 
+    //     let { startDate, endDate, filterOption } = req.query;
+    //     let ordersQuery = {};
+
+    //     if (startDate && endDate) {
+    //         ordersQuery.orderDate = {
+    //             $gte: new Date(startDate),
+    //             $lte: new Date(endDate)
+    //         };
+    //     } else if (filterOption) {
+    //         const today = moment().tz('Asia/Kolkata').startOf('day');
+    //         switch (filterOption) {
+    //             case 'daily':
+    //                 startDate = today;
+    //                 endDate = moment(today).endOf('day');
+    //                 break;
+    //             case 'weekly':
+    //                 startDate = moment(today).startOf('isoWeek');
+    //                 endDate = moment(today).endOf('isoWeek');
+    //                 break;
+    //             case 'monthly':
+    //                 startDate = moment(today).startOf('month');
+    //                 endDate = moment(today).endOf('month');
+    //                 break;
+    //         }
+    //         ordersQuery.orderDate = {
+    //             $gte: startDate.toDate(),
+    //             $lte: endDate.toDate()
+    //         };
+    //     }
+
+    //     const orders = await Order.find(ordersQuery).populate('userId').sort({ createdAt: -1 });
+
+    //     const doc = new PDFDocument({ margin: 30 });
+
+    //     let filename = `Sales_Report_${new Date().toISOString()}.pdf`;
+    //     res.setHeader('Content-disposition', `attachment; filename=${filename}`);
+    //     res.setHeader('Content-type', 'application/pdf');
+    //     doc.pipe(res);
+
+    //     doc.fontSize(20).text('Sales Report', { align: 'center' });
+    //     doc.moveDown();
+
+    //     // Table Header
+    //     const tableHeaders = ['Order Date', 'Order ID', 'User Name', 'Product Name', 'Address', 'Discount Price', 'Total Price', 'Quantity', 'Payment Method'];
+    //     doc.fontSize(12);
+    //     tableHeaders.forEach(header => {
+    //         doc.text(header, { continued: true, underline: true, width: 100, align: 'left' });
+    //         doc.text(' ', { continued: true });
+    //     });
+    //     doc.moveDown();
+
+    //     // Table Rows
+    //     orders.forEach(order => {
+    //         const orderDate = order.createdAt.toDateString();
+    //         const orderId = order._id.toString();
+    //         const userName = order.userId.name;
+    //         const productName = order.items.map(item => item.productName).join(', ');
+    //         const address = `${order.address.address}, ${order.address.city}, ${order.address.state}, ${order.address.pincode}`;
+    //         const discountPrice = order.items.map(item => item.discountPrice).join(', ');
+    //         const totalPrice = `₹${order.totalPrice}`;
+    //         const quantity = order.totalQuantity.toString();
+    //         const paymentMethod = order.paymentMethod;
+
+    //         const row = [orderDate, orderId, userName, productName, address, discountPrice, totalPrice, quantity, paymentMethod];
+    //         row.forEach(cell => {
+    //             doc.text(cell, { continued: true, width: 100, align: 'left' });
+    //             doc.text(' ', { continued: true });
+    //         });
+    //         doc.moveDown();
+    //     });
+
+    //     doc.end();
+    // } catch (error) {
+    //     console.log(error);
+    //     res.status(500).send('Internal Server Error');
+    // }
+    try {
         let { startDate, endDate, filterOption } = req.query;
         let ordersQuery = {};
-
+        let sum = 0;
         if (startDate && endDate) {
             ordersQuery.orderDate = {
                 $gte: new Date(startDate),
-                $lte: new Date(endDate)
+                $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+               
             };
         } else if (filterOption) {
-            const today = moment().tz('Asia/Kolkata').startOf('day');
+            const today = moment().startOf('day');
             switch (filterOption) {
                 case 'daily':
-                    startDate = today;
-                    endDate = moment(today).endOf('day');
+                    start = today;
+                    end = moment(today).endOf('day');
                     break;
                 case 'weekly':
-                    startDate = moment(today).startOf('isoWeek');
-                    endDate = moment(today).endOf('isoWeek');
+                    start = moment(today).startOf('isoWeek');
+                    end = moment(today).endOf('isoWeek');
                     break;
                 case 'monthly':
-                    startDate = moment(today).startOf('month');
-                    endDate = moment(today).endOf('month');
+                    start = moment(today).startOf('month');
+                    end = moment(today).endOf('month');
                     break;
             }
             ordersQuery.orderDate = {
@@ -721,51 +799,115 @@ const getsalesPdf = async (req, res) => {
             };
         }
 
-        const orders = await Order.find(ordersQuery).populate('userId').sort({ createdAt: -1 });
+        const orders = await Order.find(ordersQuery).populate("userId").sort({ orderDate: -1 });
+        console.log(orders)
+        const totalCount = await Order.countDocuments(ordersQuery);
+        let totalAmount = await Order.aggregate([
+            {
+                $match: ordersQuery,
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalAmount: { $sum: "$payment.amount" },
+                },
+            },
+            {
+                $project: {
+                    _id: 0
+                }
+            }
+        ]);
 
-        const doc = new PDFDocument({ margin: 30 });
+        let totalUser = await Order.aggregate([
+            {
+                $match: ordersQuery
+            },
+            {
+                $group: { _id: "$userId" }
+            },
+            {
+                $count: "uniqueUsers"
+            }
+        ]);
 
-        let filename = `Sales_Report_${new Date().toISOString()}.pdf`;
-        res.setHeader('Content-disposition', `attachment; filename=${filename}`);
-        res.setHeader('Content-type', 'application/pdf');
+        const uniqueUserCount = totalUser.length > 0 ? totalUser[0].uniqueUsers : 0;
+
+        totalAmount = (totalAmount.length > 0) ? totalAmount[0].totalAmount : 0;
+
+        const doc = new PDFDocument2();
+        const salesReportPdfName = 'salesReport-' + Date.now() + '.pdf';
+        const salesReportPdfPath = path.join('data', 'salesReportPdf', salesReportPdfName);
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'inline; filename="' + salesReportPdfName + '"');
+
+        doc.pipe(fs.createWriteStream(salesReportPdfPath));
         doc.pipe(res);
 
+        // Add content to PDF
         doc.fontSize(20).text('Sales Report', { align: 'center' });
         doc.moveDown();
 
-        // Table Header
-        const tableHeaders = ['Order Date', 'Order ID', 'User Name', 'Product Name', 'Address', 'Discount Price', 'Total Price', 'Quantity', 'Payment Method'];
-        doc.fontSize(12);
-        tableHeaders.forEach(header => {
-            doc.text(header, { continued: true, underline: true, width: 100, align: 'left' });
-            doc.text(' ', { continued: true });
+        // doc.fontSize(15).text(`Overall Sales Count: ${totalCount}`);
+        // doc.moveDown();
+
+        // doc.fontSize(15).text(`Overall Order Amount: ${totalAmount.toFixed(2)}`);
+        // doc.moveDown();
+
+        // doc.fontSize(15).text(`Total Users: ${uniqueUserCount}`);
+        // doc.moveDown(2);
+
+        // Prepare table data
+        const table = {
+            headers: [
+                 'Name', 'Products', 'Total Quantity', 'Total Price', 'Address', 'Payment Method', 'Order Date'
+            ],
+            rows: orders.map(order => {
+                sum = 0;
+                let totalQuantity = 0;
+                const products = order.items.map(item => {
+                    totalQuantity += item.count;
+                    if (item.orderStatus === "cancelled") {
+                        return `${item.productName}(cancelled) - ${item.count}`;
+                    } else if (item.orderStatus === "returned") {
+                        return `${item.productName}(returned) - ${item.count}`;
+                    } else {
+                        sum += item.discountPrice;
+                        return `${item.productName} - ${item.count}`;
+                    }
+                }).join(', ');
+             
+                if (order.coupon.discount) {
+                    sum = (sum * (1 - order.coupon.discount / 100)).toFixed(2);
+                } else {
+                    sum = sum.toFixed(2);
+                }
+                return [
+                 
+                    order.userId.name,
+                    order.items.map(item=> item.productName).join(', '),
+                    order.totalQuantity,
+                    order.totalPrice,
+                    order.address.address,
+                    order.paymentMethod,
+                    order.orderDate.toISOString().split('T')[0] // Format as YYYY-MM-DD
+                ];
+            })
+        };
+
+        // Add table to PDF
+        doc.table(table, {
+            prepareHeader: () => doc.font('Helvetica-Bold').fontSize(10),
+            prepareRow: (row, i) => doc.font('Helvetica').fontSize(8),
+            options: { header: { repeat: false } } // Disable repeating headers on new pages
         });
-        doc.moveDown();
 
-        // Table Rows
-        orders.forEach(order => {
-            const orderDate = order.createdAt.toDateString();
-            const orderId = order._id.toString();
-            const userName = order.userId.name;
-            const productName = order.items.map(item => item.productName).join(', ');
-            const address = `${order.address.address}, ${order.address.city}, ${order.address.state}, ${order.address.pincode}`;
-            const discountPrice = order.items.map(item => item.discountPrice).join(', ');
-            const totalPrice = `₹${order.totalPrice}`;
-            const quantity = order.totalQuantity.toString();
-            const paymentMethod = order.paymentMethod;
-
-            const row = [orderDate, orderId, userName, productName, address, discountPrice, totalPrice, quantity, paymentMethod];
-            row.forEach(cell => {
-                doc.text(cell, { continued: true, width: 100, align: 'left' });
-                doc.text(' ', { continued: true });
-            });
-            doc.moveDown();
-        });
-
+        // Finalize the PDF and end the stream
         doc.end();
+
     } catch (error) {
         console.log(error);
-        res.status(500).send('Internal Server Error');
     }
 };
 
@@ -887,19 +1029,23 @@ const getaddcoupon = async (req,res) => {
 }
 
 
-const postaddcoupon = async (req,res) => {
+const postaddcoupon = async (req, res) => {
     try {
         console.log("Coupon fetched", req.body);
     
         // Extract data from request body
-        const { couponCode, discount, createDate, expiryDate } = req.body;
+        const { couponCode, discount, fixedRate, createDate, expiryDate, maxAmount, minPurchaseAmount } = req.body;
+        console.log(maxAmount, minPurchaseAmount);
     
         // Create a new coupon instance
         const newCoupon = new Coupon({
-          code: couponCode,
-          discountValue: discount,
-          usedBy: new Date(createDate),
-          expirationDate: new Date(expiryDate),
+            code: couponCode,
+            discountValue: discount,
+            fixedRate: fixedRate, // Include the fixedRate field
+            usedBy: new Date(createDate),
+            expirationDate: new Date(expiryDate),
+            minimum: minPurchaseAmount,
+            maximum: maxAmount
         });
     
         // Save the coupon to the database
@@ -907,11 +1053,12 @@ const postaddcoupon = async (req,res) => {
     
         // Redirect to the coupon management page
         res.redirect("/admin/coupon");
-      } catch (error) {
-         console.log(error);
+    } catch (error) {
+        console.log(error);
         res.status(500).send('Internal Server Error');
-     }
+    }
 }
+
 
 
 
@@ -934,7 +1081,7 @@ const geteditcoupon = async (req,res) => {
 const posteditcoupon = async (req, res) => {
     try {
         const id = req.params._id; // Accessing the ID from request parameters
-        const { couponCode, discount, createDate, expiryDate } = req.body; // Accessing data from form body
+        const { couponCode, discount,fixedRate, createDate, expiryDate, maxAmount, minPurchaseAmount } = req.body; // Accessing data from form body
 
         // Find the coupon by ID
         const coupon = await Coupon.findById(id);
@@ -945,8 +1092,11 @@ const posteditcoupon = async (req, res) => {
         // Update the coupon fields with the new values from the form
         coupon.code = couponCode;
         coupon.discountValue = discount;
+        coupon.fixedRate=fixedRate,
         coupon.usedBy = new Date(createDate);
         coupon.expirationDate = new Date(expiryDate);
+        coupon.maximum = maxAmount;
+        coupon.minimum = minPurchaseAmount;
 
         // Save the updated coupon
         await coupon.save();
@@ -958,6 +1108,7 @@ const posteditcoupon = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 
 const deleteCoupon = async (req, res) => {
@@ -980,6 +1131,113 @@ const deleteCoupon = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+const getsalesfilter = async (req, res) =>{
+    const filter = req.query.filter; // This will be 'yearly', 'monthly', or 'weekly'
+
+    try {
+        let salesData;
+
+        if (filter === 'yearly') {
+            // Aggregate yearly sales data
+            salesData = await aggregateYearlySales();
+        } else if (filter === 'monthly') {
+            // Aggregate monthly sales data
+            salesData = await aggregateMonthlySales();
+        } else if (filter === 'weekly') {
+            // Aggregate weekly sales data (current week)
+            salesData = await aggregateWeeklySales();
+        } else {
+            return res.status(400).json({ error: 'Invalid filter' });
+        }
+
+        res.json(salesData);
+    } catch (error) {
+        console.error('Error fetching sales data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+async function aggregateYearlySales() {
+    const currentYear = moment().year();
+   
+
+    const yearlySales = await Order.aggregate([
+        {
+            $match: {
+                $expr: { $eq: [{ $year: '$orderDate' }, currentYear] }
+            }
+        },
+        {
+            $group: {
+                _id: { $month: '$orderDate' },
+                totalSales: { $sum: '$totalPrice' }
+            }
+        },
+        {
+            $sort: { '_id': 1 }
+        }
+    ]);
+    console.log("yearlySales",yearlySales);
+    return yearlySales;
+}
+
+
+// Function to aggregate monthly sales data
+async function aggregateMonthlySales() {
+    const currentYear = moment().year();
+    const currentMonth = moment().month();
+    console.log("222222222222222222");
+
+    const monthlySales = await Order.aggregate([
+        {
+            $match: {
+                $expr: {
+                    $and: [
+                        { $eq: [{ $year: '$orderDate' }, currentYear] },
+                        { $eq: [{ $month: '$orderDate' }, currentMonth + 1] } // +1 because $month is 1-indexed in MongoDB
+                    ]
+                }
+            }
+        },
+        {
+            $group: {
+                _id: { $week: '$orderDate' }, // Group by week in the selected month
+                totalSales: { $sum: '$totalPrice' }
+            }
+        },
+        {
+            $sort: { '_id': 1 }
+        }
+    ]);
+    console.log("monthlySales",monthlySales);
+    return monthlySales;
+}
+
+// Function to aggregate weekly sales data (current week)
+async function aggregateWeeklySales() {
+    const startOfWeek = moment().startOf('week').toDate();
+    const endOfWeek = moment().endOf('week').toDate();
+
+    const weeklySales = await Order.aggregate([
+        {
+            $match: {
+                orderDate: { $gte: startOfWeek, $lte: endOfWeek }
+            }
+        },
+        {
+            $group: {
+                _id: { $dateToString: { format: '%Y-%m-%d', date: '$orderDate' } },
+                totalSales: { $sum: '$totalPrice' }
+            }
+        },
+        {
+            $sort: { '_id': 1 }
+        }
+    ]);
+console.log("weeklySales",weeklySales);
+    return weeklySales;
+}
 
 
 
@@ -1013,7 +1271,8 @@ module.exports = {
     postaddcoupon,
     geteditcoupon,
     posteditcoupon,
-    deleteCoupon
+    deleteCoupon,
+    getsalesfilter
 
 
 
