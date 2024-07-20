@@ -1060,8 +1060,6 @@ const postaddcoupon = async (req, res) => {
 }
 
 
-
-
 const geteditcoupon = async (req,res) => {
      try {
         const id = req.params._id; // Accessing the ID from request parameters

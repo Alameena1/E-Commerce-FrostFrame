@@ -392,7 +392,6 @@ const getproduct = async (req, res) => {
 };
 
 
-
 const postlogout = (req, res) => {
     req.session.destroy((err) => {
         if (err) {
@@ -403,7 +402,6 @@ const postlogout = (req, res) => {
         res.redirect("/login")
     })
 }
-
 
 
 const getgoogle = (req, res) => {
@@ -585,8 +583,6 @@ const postupdateProfile = async (req, res) => {
 };
 
 
-
-
 const getaddress = async (req, res) => {
     try {
         const userId = req.session.user;
@@ -602,7 +598,6 @@ const getaddress = async (req, res) => {
 
     }
 }
-
 
 
 const addAddress = async (req, res) => {
@@ -791,11 +786,19 @@ const getcheckout = async (req, res) => {
 
         const items = cart.items;
 
+        const allCategories = await category.find();
+        const visibleCategoryIds = allCategories.filter(cat => cat.isVisible).map(cat => cat._id.toString());
+
         // Check if any item quantity in the cart is greater than the available stock
         for (const item of items) {
             if (item.quantity > item.productId.stock) {
-                // Redirect to the cart page with a message
                 req.flash('error', `Not enough stock for product: ${item.productId.name}`);
+                return res.redirect("/cart");
+            }
+
+            // Check if the product's category is blocked
+            if (!visibleCategoryIds.includes(item.productId.category)) {
+                req.flash('error', `Product not available now: ${item.productId.name}`);
                 return res.redirect("/cart");
             }
         }
