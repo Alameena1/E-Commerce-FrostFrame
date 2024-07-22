@@ -788,6 +788,7 @@ const getcheckout = async (req, res) => {
 
         const allCategories = await category.find();
         const visibleCategoryIds = allCategories.filter(cat => cat.isVisible).map(cat => cat._id.toString());
+       
 
         // Check if any item quantity in the cart is greater than the available stock
         for (const item of items) {
@@ -795,12 +796,13 @@ const getcheckout = async (req, res) => {
                 req.flash('error', `Not enough stock for product: ${item.productId.name}`);
                 return res.redirect("/cart");
             }
+            console.log(visibleCategoryIds);
 
-            // Check if the product's category is blocked
-            if (!visibleCategoryIds.includes(item.productId.category)) {
-                req.flash('error', `Product not available now: ${item.productId.name}`);
-                return res.redirect("/cart");
-            }
+            // // Check if the product's category is blocked
+            // if (visibleCategoryIds.includes(item.productId.category)) {
+            //     req.flash('error', `Product not available now: ${item.productId.name}`);
+            //     return res.redirect("/cart");
+            // }
         }
 
         const loggedIn = req.session.user;
