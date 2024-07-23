@@ -467,8 +467,8 @@ const postforget = async (req, res) => {
 const sendResetPasswordMessage = async (name, email, token) => {
 
     try {
-        console.log(process.env.usern)
-        const resetLink = `http://localhost:3000/newpassword?token=${token}`;
+       
+        const resetLink = `${process.env.reset}${token}`;
 
         const mailOptions = {
             from: {
