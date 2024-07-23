@@ -468,7 +468,7 @@ const sendResetPasswordMessage = async (name, email, token) => {
 
     try {
        
-        const resetLink = `${process.env.reset}${token}`;
+        const resetLink = `${process.env.DOMAIN_URI}/newpassword?token=${token}`;
 
         const mailOptions = {
             from: {
