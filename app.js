@@ -40,11 +40,11 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 /* DEVELOPMENT BEGIN */
 
-    app.use((req,res,next)=>{
-        req.session.user="666454ac0e62ed10f3dea3f9"
-        req.session.admin="alameena8841@gmail.com"
-        next()
-    })
+    // app.use((req,res,next)=>{
+    //     req.session.user="666454ac0e62ed10f3dea3f9"
+    //     req.session.admin="alameena8841@gmail.com"
+    //     next()
+    // })
 
 /* DEVELOPMENT END */
 

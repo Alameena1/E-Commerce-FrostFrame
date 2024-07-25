@@ -284,15 +284,15 @@
 
             </table>
         </div>
-
         <div class="pagination">
             <% for (let i = 1; i <= totalPages; i++) { %>
-                <a href="/admin/salesreport?page=<%= i %>&startDate=<%= startDate ? startDate.toISOString().slice(0, 10) : '' %>&endDate=<%= endDate ? endDate.toISOString().slice(0, 10) : '' %>&filterOption=<%= filterOption || '' %>"
+                <a href="/admin/salesreport?page=<%= i %>&startDate=<%= startDate %>&endDate=<%= endDate %>&filterOption=<%= filterOption || '' %>"
                    class="<%= currentPage === i ? 'active' : '' %>">
                     <%= i %>
                 </a>
             <% } %>
         </div>
+        
         
     </div>
 

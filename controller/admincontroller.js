@@ -620,9 +620,11 @@ const getsalesreport = async (req, res) => {
         let ordersQuery = {};
 
         if (startDate && endDate) {
+            startDate = new Date(startDate);
+            endDate = new Date(endDate);
             ordersQuery.orderDate = {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate)
+                $gte: startDate,
+                $lte: endDate
             };
         } else if (filterOption) {
             const today = moment().startOf('day');
@@ -639,10 +641,13 @@ const getsalesreport = async (req, res) => {
                     startDate = moment(today).startOf('month');
                     endDate = moment(today).endOf('month');
                     break;
+                default:
+                    startDate = null;
+                    endDate = null;
             }
             ordersQuery.orderDate = {
-                $gte: startDate.toDate(),
-                $lte: endDate.toDate()
+                $gte: startDate ? startDate.toDate() : null,
+                $lte: endDate ? endDate.toDate() : null
             };
         }
 
@@ -660,7 +665,6 @@ const getsalesreport = async (req, res) => {
         const totalAmount = totalOrderAmount[0] ? totalOrderAmount[0].total : 0;
 
         const userCountResult = await Order.aggregate([
-        
             { $group: { _id: "$userId" } },
             { $count: "userCount" }
         ]);
@@ -675,8 +679,8 @@ const getsalesreport = async (req, res) => {
             userCount,
             currentPage: page,
             totalPages,
-            startDate,
-            endDate,
+            startDate: startDate ? startDate.toISOString().slice(0, 10) : '',
+            endDate: endDate ? endDate.toISOString().slice(0, 10) : '',
             filterOption
         });
 
@@ -687,98 +691,21 @@ const getsalesreport = async (req, res) => {
 };
 
 
+
 const getsalesPdf = async (req, res) => {
-    //  try {
-    //     console.log("Generating Sales PDF Report...");
-
-    //     let { startDate, endDate, filterOption } = req.query;
-    //     let ordersQuery = {};
-
-    //     if (startDate && endDate) {
-    //         ordersQuery.orderDate = {
-    //             $gte: new Date(startDate),
-    //             $lte: new Date(endDate)
-    //         };
-    //     } else if (filterOption) {
-    //         const today = moment().tz('Asia/Kolkata').startOf('day');
-    //         switch (filterOption) {
-    //             case 'daily':
-    //                 startDate = today;
-    //                 endDate = moment(today).endOf('day');
-    //                 break;
-    //             case 'weekly':
-    //                 startDate = moment(today).startOf('isoWeek');
-    //                 endDate = moment(today).endOf('isoWeek');
-    //                 break;
-    //             case 'monthly':
-    //                 startDate = moment(today).startOf('month');
-    //                 endDate = moment(today).endOf('month');
-    //                 break;
-    //         }
-    //         ordersQuery.orderDate = {
-    //             $gte: startDate.toDate(),
-    //             $lte: endDate.toDate()
-    //         };
-    //     }
-
-    //     const orders = await Order.find(ordersQuery).populate('userId').sort({ createdAt: -1 });
-
-    //     const doc = new PDFDocument({ margin: 30 });
-
-    //     let filename = `Sales_Report_${new Date().toISOString()}.pdf`;
-    //     res.setHeader('Content-disposition', `attachment; filename=${filename}`);
-    //     res.setHeader('Content-type', 'application/pdf');
-    //     doc.pipe(res);
-
-    //     doc.fontSize(20).text('Sales Report', { align: 'center' });
-    //     doc.moveDown();
-
-    //     // Table Header
-    //     const tableHeaders = ['Order Date', 'Order ID', 'User Name', 'Product Name', 'Address', 'Discount Price', 'Total Price', 'Quantity', 'Payment Method'];
-    //     doc.fontSize(12);
-    //     tableHeaders.forEach(header => {
-    //         doc.text(header, { continued: true, underline: true, width: 100, align: 'left' });
-    //         doc.text(' ', { continued: true });
-    //     });
-    //     doc.moveDown();
-
-    //     // Table Rows
-    //     orders.forEach(order => {
-    //         const orderDate = order.createdAt.toDateString();
-    //         const orderId = order._id.toString();
-    //         const userName = order.userId.name;
-    //         const productName = order.items.map(item => item.productName).join(', ');
-    //         const address = `${order.address.address}, ${order.address.city}, ${order.address.state}, ${order.address.pincode}`;
-    //         const discountPrice = order.items.map(item => item.discountPrice).join(', ');
-    //         const totalPrice = `₹${order.totalPrice}`;
-    //         const quantity = order.totalQuantity.toString();
-    //         const paymentMethod = order.paymentMethod;
-
-    //         const row = [orderDate, orderId, userName, productName, address, discountPrice, totalPrice, quantity, paymentMethod];
-    //         row.forEach(cell => {
-    //             doc.text(cell, { continued: true, width: 100, align: 'left' });
-    //             doc.text(' ', { continued: true });
-    //         });
-    //         doc.moveDown();
-    //     });
-
-    //     doc.end();
-    // } catch (error) {
-    //     console.log(error);
-    //     res.status(500).send('Internal Server Error');
-    // }
     try {
         let { startDate, endDate, filterOption } = req.query;
         let ordersQuery = {};
         let sum = 0;
+        
         if (startDate && endDate) {
             ordersQuery.orderDate = {
                 $gte: new Date(startDate),
                 $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
-               
             };
         } else if (filterOption) {
             const today = moment().startOf('day');
+            let start, end;
             switch (filterOption) {
                 case 'daily':
                     start = today;
@@ -794,14 +721,14 @@ const getsalesPdf = async (req, res) => {
                     break;
             }
             ordersQuery.orderDate = {
-                $gte: startDate.toDate(),
-                $lte: endDate.toDate()
+                $gte: start.toDate(),
+                $lte: end.toDate()
             };
         }
 
         const orders = await Order.find(ordersQuery).populate("userId").sort({ orderDate: -1 });
-        console.log(orders)
         const totalCount = await Order.countDocuments(ordersQuery);
+
         let totalAmount = await Order.aggregate([
             {
                 $match: ordersQuery,
@@ -832,7 +759,6 @@ const getsalesPdf = async (req, res) => {
         ]);
 
         const uniqueUserCount = totalUser.length > 0 ? totalUser[0].uniqueUsers : 0;
-
         totalAmount = (totalAmount.length > 0) ? totalAmount[0].totalAmount : 0;
 
         const doc = new PDFDocument2();
@@ -848,21 +774,16 @@ const getsalesPdf = async (req, res) => {
         // Add content to PDF
         doc.fontSize(20).text('Sales Report', { align: 'center' });
         doc.moveDown();
-
-        // doc.fontSize(15).text(`Overall Sales Count: ${totalCount}`);
-        // doc.moveDown();
-
-        // doc.fontSize(15).text(`Overall Order Amount: ${totalAmount.toFixed(2)}`);
-        // doc.moveDown();
-
-        // doc.fontSize(15).text(`Total Users: ${uniqueUserCount}`);
-        // doc.moveDown(2);
+        doc.fontSize(15).text(`Overall Sales Count: ${totalCount}`);
+        doc.moveDown();
+        doc.fontSize(15).text(`Overall Order Amount: ${totalAmount.toFixed(2)}`);
+        doc.moveDown();
+        doc.fontSize(15).text(`Total Users: ${uniqueUserCount}`);
+        doc.moveDown(2);
 
         // Prepare table data
         const table = {
-            headers: [
-                 'Name', 'Products', 'Total Quantity', 'Total Price', 'Address', 'Payment Method', 'Order Date'
-            ],
+            headers: ['Name', 'Products', 'Total Quantity', 'Total Price', 'Address', 'Payment Method', 'Order Date'],
             rows: orders.map(order => {
                 sum = 0;
                 let totalQuantity = 0;
@@ -877,18 +798,18 @@ const getsalesPdf = async (req, res) => {
                         return `${item.productName} - ${item.count}`;
                     }
                 }).join(', ');
-             
+
                 if (order.coupon.discount) {
                     sum = (sum * (1 - order.coupon.discount / 100)).toFixed(2);
                 } else {
                     sum = sum.toFixed(2);
                 }
+
                 return [
-                 
                     order.userId.name,
-                    order.items.map(item=> item.productName).join(', '),
-                    order.totalQuantity,
-                    order.totalPrice,
+                    products,
+                    totalQuantity,
+                    sum,
                     order.address.address,
                     order.paymentMethod,
                     order.orderDate.toISOString().split('T')[0] // Format as YYYY-MM-DD
@@ -908,6 +829,7 @@ const getsalesPdf = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        res.status(500).send('Internal Server Error');
     }
 };
 
