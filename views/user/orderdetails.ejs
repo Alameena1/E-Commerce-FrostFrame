@@ -224,6 +224,26 @@
 .dropdown:hover .dropbtn {
     background-color: #000000;
 }
+.button {
+  background-color: #ff4d4d; /* Red background color */
+  color: white; /* White text color */
+  border: none; /* Remove border */
+  padding: 10px 20px; /* Add some padding */
+  text-align: center; /* Center the text */
+  text-decoration: none; /* Remove underline */
+  display: inline-block; /* Display as inline-block */
+  font-size: 16px; /* Increase font size */
+  margin: 4px 2px; /* Add some margin */
+  cursor: pointer; /* Add a pointer cursor on hover */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.button:hover {
+  background-color: #ff1a1a; /* Darker red on hover */
+
+}
+
 
         /*  */
     </style>
@@ -294,7 +314,7 @@
                                                     Phone number: <%= order.address.phoneNo %>
                             </p>
 
-                            <button class="download-invoice" data-order-id="<%= order._id %>">Download Invoice</button>
+                         
 
                         </div>
                     </div>
@@ -321,12 +341,19 @@
                                     <% if (item.status !== 'Cancelled') { %>
                                         <div class="order-status">
                                             <% if (item.status === 'Delivered') { %>
-                                                <button class="return-order" data-order-id="<%= order._id %>" data-product-id="<%= item.productId %>">Return Item</button>
+                                                <button class="return-order" data-order-id="<%= order._id %>" data-product-id="<%= item.productId %>" >Return Item</button>
+                                                <br>
+                                                <br>
+                                                <button class="download-invoice" data-order-id="<%= order._id %>">Download Invoice</button>
+                                                
                                                 <!-- Download Invoice Button -->
                                             <% } else if (item.status === 'Returned') { %>
                                                 <p style="color: rgb(46, 0, 251);">Item Returned</p>
+                                                <br>
+                                                <button class="download-invoice" data-order-id="<%= order._id %>">Download Invoice</button>
+
                                             <% } else if (order.reason === 'payment_failed') { %>
-                                                <button class="retry-payment" data-order-id="<%= order._id %>" data-product-amount="<%= order.totalPrice %>" data-coupon="<%= order.coupon.couponCode %>">Retry Payment</button>
+                                                <button style="background-color:rgb(73, 73, 225); color: white; border: rgb(73, 73, 225); border-radius: 1;" class="retry-payment" data-order-id="<%= order._id %>" data-product-amount="<%= order.totalPrice %>" data-coupon="<%= order.coupon.couponCode %>">Retry Payment</button>
                                             <% } else { %>
                                                 <button class="cancel-order" data-order-id="<%= order._id %>" data-product-id="<%= item.productId %>">Cancel Item</button>
                                             <% } %>
@@ -480,8 +507,9 @@
                 const totalAmount = button.getAttribute('data-product-amount');
                 const coupon = button.getAttribute('data-coupon');
                 const btn=document.querySelector('.retry-payment')
+                
                 console.log(orderId);
-                console.log(totalAmount);
+               
                 console.log(coupon);
                 
         

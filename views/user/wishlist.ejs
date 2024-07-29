@@ -334,6 +334,41 @@
 }
 
         /*  */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #007bff;
+            background-color: #f8f9fa;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .pagination a.active {
+            background-color: #007bff;
+            color: #fff;
+            border: 1px solid #007bff;
+        }
+
+        .pagination a:hover {
+            background-color: #e9ecef;
+            color: #0056b3;
+        }
+
+        .pagination a:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.5);
+        }
+        /*  */
+
     </style>
 </head>
 
@@ -464,6 +499,15 @@
                         <% } %>
                     </div>
                 </div>
+                <div class="pagination" style="margin-left: 50%;">
+                    <% for (let i=1; i <=totalPages; i++) { %>
+                        <a href="/wishlist?page=<%= i %>" class="<%= currentPage === i ? 'active' : '' %>">
+                            <%= i %>
+                        </a>
+
+                        <% } %>
+                </div>
+
             </div>
         </div>
     </div>

@@ -140,7 +140,7 @@ const getusermanagement = async (req, res) => {
         const perPage = 5; // Number of products per page
         const skip = (page - 1) * perPage;
 
-        const totalCount = await product.countDocuments(); // Get total count of products
+        const totalCount = await collection.countDocuments(); // Get total count of products
         const totalPages = Math.ceil(totalCount / perPage); // Calculate total pages
 
 

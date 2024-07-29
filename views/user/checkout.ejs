@@ -400,54 +400,188 @@
             color: white;
             background-color: #007bff;
         }
-           /*  */
-           .nav-options {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown {
-    position: relative;
-}
-
-.dropbtn {
-    background-color: #000000; /* Change as needed */
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-.dropdown:hover .dropbtn {
-    background-color: #000000;
-}
 
         /*  */
+        .nav-options {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropbtn {
+            background-color: #000000;
+            /* Change as needed */
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #000000;
+        }
+
+        /*  */
+
+
+        /*extra  */
+        /* Existing styles */
+
+        /* Ensuring the select element has a visible border */
+        select {
+            border: 1px solid #ccc;
+            /* Adjust the color as needed */
+            padding: 5px;
+            /* Add padding for better appearance */
+            border-radius: 5px;
+            /* Optional: Add border-radius for rounded corners */
+            background-color: white;
+            /* Ensure background is white */
+        }
+
+        /* Additional styles for better appearance */
+        select:focus {
+            border-color: #007bff;
+            /* Change border color on focus */
+            outline: none;
+            /* Remove the default outline */
+        }
+
+        /* General styles for your dropdown components */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #000000;
+        }
+
+        /* Other existing styles */
+        .order-summary-box {
+            width: 25%;
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            height: fit-content;
+        }
+
+        .order-summary-box h2 {
+            margin-top: 0;
+        }
+
+        .price-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .price {
+            font-weight: bold;
+        }
+
+        /*extra  */
+
+        #applyCouponBtn {
+            margin-top: 5px;
+            padding: 10px 20px;
+            /* Adjust padding as needed */
+            background-color: #007bff;
+            /* Button background color */
+            color: white;
+            /* Button text color */
+            border: none;
+            /* Remove default border */
+            border-radius: 5px;
+            /* Rounded corners */
+            cursor: pointer;
+            /* Pointer cursor on hover */
+            font-size: 16px;
+            /* Font size */
+            transition: background-color 0.3s ease;
+            /* Smooth background color transition */
+        }
+
+        #applyCouponBtn:hover {
+            background-color: #0056b3;
+            /* Darker background color on hover */
+        }
+
+        /* Optional: Styles for the Remove Coupon button */
+        #removeCouponBtn {
+            margin-top: 5px;
+            padding: 10px 20px;
+            /* Adjust padding as needed */
+            background-color: #dc3545;
+            /* Button background color */
+            color: white;
+            /* Button text color */
+            border: none;
+            /* Remove default border */
+            border-radius: 5px;
+            /* Rounded corners */
+            cursor: pointer;
+            /* Pointer cursor on hover */
+            font-size: 16px;
+            /* Font size */
+            transition: background-color 0.3s ease;
+            /* Smooth background color transition */
+        }
+
+        #removeCouponBtn:hover {
+            background-color: #c82333;
+            /* Darker background color on hover */
+        }
     </style>
 </head>
 
@@ -460,11 +594,11 @@
             <div class="dropdown">
                 <button class="dropbtn">Categories</button>
                 <div class="dropdown-content">
-                    <% newcategory.forEach((categories, index) => { %>
+                    <% newcategory.forEach((categories, index)=> { %>
                         <a href="/sunglass?categoryName=<%= categories.categoryName %>">
                             <%= categories.categoryName %>
                         </a>
-                    <% }); %>
+                        <% }); %>
                 </div>
             </div>
         </div>
@@ -517,14 +651,14 @@
                         <button type="button" id="confirmAddressBtn">Next</button>
                         <p id="addressError" class="error-message"></p>
 
-                       </div>
-                        </div>
+                </div>
+            </div>
 
-                         <div class="accordion-item">
-                         <button class="accordion-header" id="orderSummaryHeader" type="button">Order Summary</button>
+            <div class="accordion-item">
+                <button class="accordion-header" id="orderSummaryHeader" type="button">Order Summary</button>
 
-                          <div class="accordion-content" id="orderSummaryContent">
-                        <% if (cart && cart.items.length> 0) { %>
+                <div class="accordion-content" id="orderSummaryContent">
+                    <% if (cart && cart.items.length> 0) { %>
                         <% cart.items.forEach(item=> { %>
                             <div class="product">
                                 <div class="product-image">
@@ -551,28 +685,30 @@
                                     <p>Your cart is empty.</p>
                                     <% } %>
                                         <p id="orderSummaryError" class="error-message"></p>
-                          </div>
-                         </div>
+                </div>
+            </div>
 
 
             <div class="accordion-item">
-                
-     <% if(error_messages){ %>
-                        <p style="color: red; text-align: center;"><%= error_messages %></p>
+
+                <% if(error_messages){ %>
+                    <p style="color: red; text-align: center;">
+                        <%= error_messages %>
+                    </p>
                     <% } %>
-                <button class="accordion-header" id="paymentHeader" type="button">Payment Options</button>
-                <div class="accordion-content" id="paymentContent">
-                   
-                    <div class="payment-options">
-                        <label><input type="radio" name="payment" value="razorpay"> Razorpay</label>
-                        <label><input type="radio" name="payment" value="cod"> Cash on Delivery</label>
-                    </div>
+                        <button class="accordion-header" id="paymentHeader" type="button">Payment Options</button>
+                        <div class="accordion-content" id="paymentContent">
 
-                    <button type="submit" id="confirmPaymentBtn" class="next-button">Place Order</button>
-                    <p id="paymentError" class="error-message"></p>
+                            <div class="payment-options">
+                                <label><input type="radio" name="payment" value="razorpay"> Razorpay</label>
+                                <label><input type="radio" name="payment" value="cod"> Cash on Delivery</label>
+                            </div>
+
+                            <button type="submit" id="confirmPaymentBtn" class="next-button">Place Order</button>
+                            <p id="paymentError" class="error-message"></p>
 
 
-                </div>
+                        </div>
             </div>
         </div>
         <div class="order-summary-box">
@@ -592,17 +728,20 @@
             <div class="coupon-section">
                 <label for="couponCode">Coupon Code:</label><br>
                 <select id="couponCode" name="couponCode">
-                    <option value="">Select a coupon</option> 
+                    <option value="">Select a coupon</option>
                     <% coupons.forEach(function(coupon) { %>
-                        <option value="<%= coupon.code %>"><%= coupon.code %></option>
-                    <% }); %>
+                        <option value="<%= coupon.code %>">
+                            <%= coupon.code %>
+                        </option>
+                        <% }); %>
                 </select>
                 <br>
-                <button type="button" id="applyCouponBtn" style="margin-top: 5px;">Apply Coupon</button>
-                <button type="button" id="removeCouponBtn" style="display: none; margin-top: 5px;">Remove Coupon</button>
+                <button type="button" id="applyCouponBtn">Apply Coupon</button>
+                <button type="button" id="removeCouponBtn" style="display: none; margin-top: 5px;">Remove
+                    Coupon</button>
                 <p id="couponError" class="error-message"></p>
             </div>
-            
+
             <div class="price-detail">
                 <span>Discount:</span>
                 <span class="price" id="discount-amount" style="color: red;">0.00</span>
@@ -617,10 +756,10 @@
                     value="<%= cart && cart.items ? (cart.items.reduce((total, item)=> total + item.productId.price * item.quantity, 0) + 15).toFixed(2) : '15.00' %>">
             </div>
         </div>
- </form>
+        </form>
     </div>
 
-   
+
     <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -634,23 +773,23 @@
                             <label for="add-name">Name</label>
                             <input type="text" class="form-control" id="add-name" name="name">
                             <span id="add-name-error" class="error-message"></span>
-                            
+
                             <label for="add-address">Address</label>
                             <input type="text" class="form-control" id="add-address" name="address">
                             <span id="add-address-error" class="error-message"></span>
-                            
+
                             <label for="add-phone">Phone</label>
                             <input type="text" class="form-control" id="add-phone" name="phone">
                             <span id="add-phone-error" class="error-message"></span>
-                            
+
                             <label for="add-locality">Locality</label>
                             <input type="text" class="form-control" id="add-locality" name="locality">
                             <span id="add-locality-error" class="error-message"></span>
-                            
+
                             <label for="add-pincode">Pincode</label>
                             <input type="text" class="form-control" id="add-pincode" name="pincode">
                             <span id="add-pincode-error" class="error-message"></span>
-                            
+
                             <label for="add-state">State</label>
                             <input type="text" class="form-control" id="add-state" name="state">
                             <span id="add-state-error" class="error-message"></span>
@@ -665,7 +804,7 @@
             </div>
         </div>
     </div>
-    
+
 
     <footer class="footer">
         <div class="containerr">
@@ -791,95 +930,95 @@
         });
     </script>
 
-<script>
-    function addAddress(event) {
-        event.preventDefault();
+    <script>
+        function addAddress(event) {
+            event.preventDefault();
 
-        const name = document.getElementById('add-name').value.trim();
-        const address = document.getElementById('add-address').value.trim();
-        const phone = document.getElementById('add-phone').value.trim();
-        const locality = document.getElementById('add-locality').value.trim();
-        const pincode = document.getElementById('add-pincode').value.trim();
-        const state = document.getElementById('add-state').value.trim();
+            const name = document.getElementById('add-name').value.trim();
+            const address = document.getElementById('add-address').value.trim();
+            const phone = document.getElementById('add-phone').value.trim();
+            const locality = document.getElementById('add-locality').value.trim();
+            const pincode = document.getElementById('add-pincode').value.trim();
+            const state = document.getElementById('add-state').value.trim();
 
-        // Validation
-        if (name === '') {
-            showError('add-name-error', 'Please enter a name.');
-            return;
-        }
-        if (address === '') {
-            showError('add-address-error', 'Please enter an address.');
-            return;
-        }
-        if (phone === '') {
-            showError('add-phone-error', 'Please enter a phone number.');
-            return;
-        }
-        if (locality === '') {
-            showError('add-locality-error', 'Please enter a locality.');
-            return;
-        }
-        if (pincode === '') {
-            showError('add-pincode-error', 'Please enter a pincode.');
-            return;
-        }
-        if (state === '') {
-            showError('add-state-error', 'Please enter a state.');
-            return;
-        }
-
-        // You can add more specific validation rules for each field if needed
-        // Example: Phone number format validation
-
-        const phoneRegex = /^\d{10}$/;
-        if (!phoneRegex.test(phone)) {
-            showError('add-phone-error', 'Please enter a valid 10-digit phone number.');
-            return;
-        }
-
-        // Form data
-        const data = { name, address, phone, locality, pincode, state };
-
-        // POST request
-        fetch('/addAddress', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message === 'Address added successfully') {
-                location.reload();
-                $('#addAddressModal').modal('hide');
+            // Validation
+            if (name === '') {
+                showError('add-name-error', 'Please enter a name.');
+                return;
             }
-        })
-        .catch(error => console.error('Error:', error));
-    }
+            if (address === '') {
+                showError('add-address-error', 'Please enter an address.');
+                return;
+            }
+            if (phone === '') {
+                showError('add-phone-error', 'Please enter a phone number.');
+                return;
+            }
+            if (locality === '') {
+                showError('add-locality-error', 'Please enter a locality.');
+                return;
+            }
+            if (pincode === '') {
+                showError('add-pincode-error', 'Please enter a pincode.');
+                return;
+            }
+            if (state === '') {
+                showError('add-state-error', 'Please enter a state.');
+                return;
+            }
 
-    function showError(inputId, message) {
-        const errorElement = document.getElementById(inputId);
-        errorElement.textContent = message;
-        errorElement.style.display = 'block';
-    }
+            // You can add more specific validation rules for each field if needed
+            // Example: Phone number format validation
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const addAddressForm = document.getElementById('addAddressForm');
-        addAddressForm.addEventListener('submit', addAddress);
+            const phoneRegex = /^\d{10}$/;
+            if (!phoneRegex.test(phone)) {
+                showError('add-phone-error', 'Please enter a valid 10-digit phone number.');
+                return;
+            }
 
-        // Reset error messages on input focus
-        const formInputs = addAddressForm.querySelectorAll('.form-control');
-        formInputs.forEach(input => {
-            input.addEventListener('focus', () => {
-                const errorId = input.id + '-error';
-                const errorElement = document.getElementById(errorId);
-                errorElement.textContent = '';
-                errorElement.style.display = 'none';
+            // Form data
+            const data = { name, address, phone, locality, pincode, state };
+
+            // POST request
+            fetch('/addAddress', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Address added successfully') {
+                        location.reload();
+                        $('#addAddressModal').modal('hide');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function showError(inputId, message) {
+            const errorElement = document.getElementById(inputId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const addAddressForm = document.getElementById('addAddressForm');
+            addAddressForm.addEventListener('submit', addAddress);
+
+            // Reset error messages on input focus
+            const formInputs = addAddressForm.querySelectorAll('.form-control');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    const errorId = input.id + '-error';
+                    const errorElement = document.getElementById(errorId);
+                    errorElement.textContent = '';
+                    errorElement.style.display = 'none';
+                });
             });
         });
-    });
-</script>
+    </script>
 
 
 
@@ -899,18 +1038,18 @@
             const grandTotalSpan = document.getElementById('grand-total');
             const grandTotalValue = grandTotalSpan.textContent.trim().replace(/[^\d.-]/g, '');
             const totalAmount = parseFloat(grandTotalValue);
-          
+
 
             form.addEventListener('submit', async function (event) {
                 event.preventDefault(); // Prevent the default form submission
                 const address = document.getElementById("addressSelect").value;
-                console.log("aaaaaaaaaaaaaaa",address)
+                console.log("aaaaaaaaaaaaaaa", address)
                 const coupon = document.getElementById("couponid").innerHTML
                 const paymentOption = document.querySelector('input[name="payment"]:checked').value;
-          if(!address){
-            paymentError.innerText = 'please select your address ';
-            console.error('Error details:', error);
-          }
+                if (!address) {
+                    paymentError.innerText = 'please select your address ';
+                    console.error('Error details:', error);
+                }
 
                 if (paymentOption === 'razorpay') {
                     try {
@@ -923,7 +1062,7 @@
                                 amount: totalAmount,
                                 currency: 'INR',
                                 coupon: coupon,
-                                address:address
+                                address: address
                             })
                         });
 
@@ -989,42 +1128,42 @@
                                 }
                             };
                             const rzp = new Razorpay(options);
-                    rzp.on('payment.failed', async function (response) {
-                        try {
-                            rzp.close()
-                            const result = await fetch("/razorpay-failure", {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json"
-                                },
-                                body: JSON.stringify({
-                                    razorpay_payment_id: response.error.metadata.payment_id,
-                                    razorpay_order_id: response.error.metadata.order_id,
-                                    razorpay_error: response.error,
-                                    address: address,
-                                    coupon:coupon   
+                            rzp.on('payment.failed', async function (response) {
+                                try {
+                                    rzp.close()
+                                    const result = await fetch("/razorpay-failure", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            razorpay_payment_id: response.error.metadata.payment_id,
+                                            razorpay_order_id: response.error.metadata.order_id,
+                                            razorpay_error: response.error,
+                                            address: address,
+                                            coupon: coupon
 
-                                })
-                            });
+                                        })
+                                    });
 
-                            const resultData = await result.json();
-                            Swal.fire({
-                                title: 'Payment Failed',
-                                text: 'Your payment has failed. Please try again.',
-                                icon: 'error',
-                                showCancelButton: true,
-                              
-                                confirmButtonText: 'Go To Your Order',
-                                allowOutsideClick: false
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href = '/order';
-                                } 
-                            });
-                        } catch (error) {
-                            Swal.fire("Some Error Occurred.");
-                            console.error('Error handling payment failure:', error);
-                        }
+                                    const resultData = await result.json();
+                                    Swal.fire({
+                                        title: 'Payment Failed',
+                                        text: 'Your payment has failed. Please try again.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK',
+                                        allowOutsideClick: false
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            console.log('User confirmed the alert');
+                                            // You can add any additional actions here if needed
+                                        }
+                                    });
+
+                                } catch (error) {
+                                    Swal.fire("Some Error Occurred.");
+                                    console.error('Error handling payment failure:', error);
+                                }
 
                             });
                             rzp.open();
@@ -1062,17 +1201,17 @@
             const discountAmountElement = document.getElementById('discount-amount');
             const grandTotalElement = document.getElementById('grand-total');
             const grandTotalInput = document.getElementById('grandTotalInput');
-    
+
             let originalTotal = parseFloat(grandTotalElement.textContent.trim());
-    
+
             applyCouponBtn.addEventListener('click', () => {
                 const couponCode = couponCodeInput.value.trim();
-    
+
                 if (couponCode === '') {
                     couponError.textContent = "Please enter a coupon code.";
                     return;
                 }
-            
+
                 fetch(`/validateCoupon/${couponCode}?total=${originalTotal}`)
                     .then(response => {
                         if (!response.ok) {
@@ -1089,13 +1228,13 @@
                                 discountAmount = (originalTotal * data.discount / 100).toFixed(2);
                             }
                             discountAmountElement.textContent = discountAmount;
-    
+
                             const discountedTotal = (originalTotal - discountAmount).toFixed(2);
                             grandTotalElement.textContent = discountedTotal;
                             grandTotalInput.value = discountedTotal;
-    
+
                             document.getElementById("couponid").textContent = data.couponid
-    
+
                             removeCouponBtn.style.display = 'inline-block';
                             applyCouponBtn.style.display = 'none';
                             couponError.textContent = "";
@@ -1108,12 +1247,12 @@
                         couponError.textContent = "Error applying coupon.";
                     });
             });
-    
+
             removeCouponBtn.addEventListener('click', () => {
                 discountAmountElement.textContent = '0.00';
                 grandTotalElement.textContent = originalTotal.toFixed(2);
                 grandTotalInput.value = originalTotal.toFixed(2);
-    
+
                 couponCodeInput.value = '';
                 removeCouponBtn.style.display = 'none';
                 applyCouponBtn.style.display = 'inline-block';
@@ -1121,7 +1260,7 @@
             });
         });
     </script>
-    
+
 
 
     <!-- coupon -->

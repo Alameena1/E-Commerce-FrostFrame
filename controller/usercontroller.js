@@ -430,36 +430,39 @@ const getCart = async (req, res) => {
 / //////////////////////forgett password //////////////
 
 const getforget = async (req, res) => {
-    console.log("getting forget");
     try {
-        res.render("user/forget")
-    } catch (error) {
-        res.send(error)
 
+        res.render("user/forget", { errorMessage: req.flash("error") });
+    } catch (error) {
+        res.send(error.message);
     }
 }
-
 
 const postforget = async (req, res) => {
     try {
         const email = req.body.email;
-        const Userdata = await collection.findOne({ email: email })
+        const Userdata = await collection.findOne({ email: email });
+
         if (Userdata) {
+            const randomnumber = randomstring.generate();
+            const updatedData = await collection.updateOne(
+                { email: email },
+                { $set: { token: randomnumber } }
+            );
+            console.log("Update data is coming ", updatedData);
 
-            const randomnumber = randomstring.generate()
-            const updatedData = await collection.updateOne({ email: email }, { $set: { token: randomnumber } })
-            console.log("update data is coming ", updatedData)
-            sendResetPasswordMessage(Userdata.name, Userdata.email, randomnumber)
-            res.render("user/forget", { message: "check your email" })
-            console.log("entered");
+            sendResetPasswordMessage(Userdata.name, Userdata.email, randomnumber);
 
+            req.flash('error', 'Check your email for the reset link.');
+
+            console.log("dfugds");
+            res.redirect('/forget');
         } else {
-            res.render("user/forget", { message: "user not found " })
-
+            req.flash('error', 'User not found.');
+            res.redirect('/forget');
         }
     } catch (error) {
-        res.send(error.message)
-
+        res.send(error.message);
     }
 }
 
@@ -585,14 +588,22 @@ const postupdateProfile = async (req, res) => {
 
 const getaddress = async (req, res) => {
     try {
+        const page = req.query.page || 1;
+        const perPage = 5; // Number of products per page
+        const skip = (page - 1) * perPage;
+
+        const totalCount = await Order.countDocuments(); // Get total count of products
+        const totalPages = Math.ceil(totalCount / perPage); // Calculate total pages
+
+
         const userId = req.session.user;
         const user = await User.findById(userId);
         const newcategory = await category.find()
-        const address = await Address.find({ userId: userId })
+        const address = await Address.find({ userId: userId }).skip(skip).limit(perPage).sort({ createdAt: -1 })
         const loggedIn = req.session.user;
 
 
-        res.render("user/address", { newcategory: newcategory, address: address, user: user, loggedIn: loggedIn })
+        res.render("user/address", { newcategory: newcategory, address: address, user: user, loggedIn: loggedIn, currentPage: parseInt(page),totalPages})
     } catch (error) {
         throw error
 
@@ -1090,7 +1101,7 @@ const changepassword = async (req, res) => {
 
         const newcategory = await category.find();
         const loggedIn = req.session.user;
-        res.render("user/changepassword", { user: user, loggedIn: loggedIn, newcategory: newcategory,error_messages: req.flash("error")})
+        res.render("user/changepassword", { user: user, loggedIn: loggedIn, newcategory: newcategory,errorMessage: req.flash("error")})
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Internal server error.' });
@@ -1117,6 +1128,12 @@ const postchangepassword = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }
+        if(newPassword[0] == " "){
+          
+            req.flash('error', 'Check your email for the reset link.');
+
+            
+        }
 
         // Verify the current password
         const isMatch = await bcrypt.compare(currentPassword, user.password);
@@ -1124,7 +1141,7 @@ const postchangepassword = async (req, res) => {
 
             return res.status(400).json({ success: false, message: 'Current password is incorrect.' });
         }
-
+     
         // Hash the new password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(newPassword, salt);
@@ -1143,15 +1160,23 @@ const postchangepassword = async (req, res) => {
 const getwishlist = async (req, res) => {
 
     try {
+        const page = req.query.page || 1;
+        const perPage = 5; // Number of products per page
+        const skip = (page - 1) * perPage;
+
+        const totalCount = await Wishlist.countDocuments(); // Get total count of products
+        const totalPages = Math.ceil(totalCount / perPage); // Calculate total pages
+
+
         const userId = req.session.user;
         const user = await User.findById(userId);
         const newcategory = await category.find();
         const loggedIn = req.session.user;
         const orders = await Order.find({ userId });
-        const wishlist = await Wishlist.find({ userId: userId })
+        const wishlist = await Wishlist.find({ userId: userId }).skip(skip).limit(perPage).sort({ createdAt: -1 })
 
 
-        res.render("user/wishlist", { newcategory, loggedIn, user, orders, wishlist });
+        res.render("user/wishlist", { newcategory, loggedIn, user, orders, wishlist, totalPages, currentPage: parseInt(page) });
     } catch (error) {
 
 
@@ -1218,17 +1243,31 @@ const postaddtowishlist = async (req, res) => {
 
 const getwallet = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 5; // Number of transactions per page
+        const skip = (page - 1) * perPage;
+
         const userId = req.session.user;
-        const user = await User.findById(userId);
-        const newcategory = await category.find();
+        const user = await User.findById(userId).populate({
+            path: 'wallet.transactions',
+            options: {
+                skip: skip,
+                limit: perPage,
+                sort: { date: -1 }
+            }
+        });
+
+        const totalCount = user.wallet.transactions.length;
+        const totalPages = Math.ceil(totalCount / perPage);
+        const newCategory = await category.find();
         const loggedIn = req.session.user;
 
-        res.render('user/wallet', { newcategory, loggedIn, user })
+        res.render('user/wallet', { newCategory, loggedIn, user, totalPages, currentPage: page });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: 'Internal server error.' });
     }
-}
+};
 
 
 const postrazorpay = async (req, res) => {
@@ -1321,12 +1360,20 @@ async function getCouponDetails(couponCode) {
 const getcoupon = async (req, res) => {
 
     try {
+        const page = req.query.page || 1;
+        const perPage = 5; // Number of products per page
+        const skip = (page - 1) * perPage;
+
+        const totalCount = await Coupon.countDocuments(); // Get total count of products
+        const totalPages = Math.ceil(totalCount / perPage); // Calculate total pages
+
+
         const userId = req.session.user;
         const user = await User.findById(userId);
         const newcategory = await category.find();
         const loggedIn = req.session.user;
-        const coupons = await Coupon.find()
-        res.render('user/coupon', { coupons, newcategory, loggedIn, user })
+        const coupons = await Coupon.find().skip(skip).limit(perPage).sort({ createdAt: -1 })
+        res.render('user/coupon', { coupons, newcategory, loggedIn, user, totalPages, currentPage: parseInt(page) })
     } catch (error) {
 
         console.log(error);
@@ -1707,7 +1754,7 @@ const postrazorpayfail = async (req, res) => {
             userId: id,
             items: items,
             totalQuantity: totalQuantity,
-            totalPrice: totalPrice,
+            totalPrice: totalPrice+15,
             address: addressObj,
             paymentMethod,
             reason: req.body.razorpay_error.reason,
